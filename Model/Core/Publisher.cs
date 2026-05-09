@@ -12,5 +12,4 @@ public class Publisher
         Rating = rating;
         Themes = themes;
     } 
-    public Publisher(){ }
 }

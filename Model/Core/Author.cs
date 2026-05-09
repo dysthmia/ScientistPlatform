@@ -1,6 +1,6 @@
 namespace Model.Core;
 
-class Author
+public class Author
 {
     public string Name { get; private set; }
     public string ORCID { get; private set; }

@@ -1,5 +1,4 @@
 using Model.Interfaces;
-
 namespace Model.Core;
 
 public partial class Article : IArticle
@@ -12,17 +11,21 @@ public partial class Article : IArticle
     public List<Author> Authors { get; private set; }
     public ArticleType Type { get; private set; }
 
-    protected Article(string title, string text, string[] keywords, DateTime publishedAt, ArticleType type)
+    protected Article (string title, 
+                      string text, 
+                      string[] keywords, 
+                      DateTime publishedAt, 
+                      ArticleType type,
+                      List<Author> authors)
     {
         Title = title;
         Text = text;
         Keywords = keywords;
         PublishedAt = publishedAt;
         ISSN = GenerateISSN();
-        Authors = new List<Author>();
+        Authors = authors;
         Type = type;
     }
-    protected Article(){ }
 
     private static string GenerateISSN()
     {
@@ -47,13 +50,10 @@ public partial class Article
         return true;
     }
 
-    public void RemovePublisher()
-    {
-        Publisher = null;
-    }
+    public void RemovePublisher() => Publisher = null!;
 }
 
 public partial class Article : ICitation
 {
-    //
+    public string Citiation { get; private set; }
 }
