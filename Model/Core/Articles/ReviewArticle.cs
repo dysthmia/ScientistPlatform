@@ -1,5 +1,5 @@
 using Model.Interfaces;
-
+using Newtonsoft.Json;
 namespace Model.Core;
 
 public class ReviewArticle : Article
@@ -19,4 +19,19 @@ public class ReviewArticle : Article
         Sources = sources ?? Array.Empty<string>();
         ReviewPeriod = reviewPeriod;
     } 
+    
+    [JsonConstructor]
+    public ReviewArticle(string title,
+                         string text,
+                         string[] keywords,
+                         DateTime publishedAt,
+                         List<Author> authors,
+                         string[] sources = null!,
+                         string reviewPeriod = "",
+                         string issn = "")
+        : base(title, text, keywords, publishedAt, ArticleType.Review, authors, issn)
+    {
+        Sources = sources ?? Array.Empty<string>();
+        ReviewPeriod = reviewPeriod;
+    }
 }

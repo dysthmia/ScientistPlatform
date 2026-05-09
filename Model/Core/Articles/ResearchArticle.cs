@@ -1,5 +1,5 @@
 using Model.Interfaces;
-
+using Newtonsoft.Json;
 namespace Model.Core;
 
 public class ResearchArticle : Article
@@ -19,4 +19,19 @@ public class ResearchArticle : Article
         Methodology = methodology;
         Results = results;
     } 
+    
+    [JsonConstructor]
+    public ResearchArticle(string title,
+                           string text,
+                           string[] keywords,
+                           List<Author> authors,
+                           DateTime publishedAt,
+                           string methodology = "",
+                           string results = "",
+                           string issn = "")
+        : base(title, text, keywords, publishedAt, ArticleType.Research, authors, issn)
+    {
+        Methodology = methodology;
+        Results = results;
+    }
 }

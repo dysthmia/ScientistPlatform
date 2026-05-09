@@ -1,4 +1,5 @@
 using Model.Interfaces;
+using Newtonsoft.Json;
 namespace Model.Core;
 
 public partial class Article : IArticle
@@ -11,7 +12,7 @@ public partial class Article : IArticle
     public List<Author> Authors { get; private set; }
     public ArticleType Type { get; private set; }
 
-    protected Article (string title, 
+    public Article (string title, 
                       string text, 
                       string[] keywords, 
                       DateTime publishedAt, 
@@ -23,6 +24,24 @@ public partial class Article : IArticle
         Keywords = keywords;
         PublishedAt = publishedAt;
         ISSN = GenerateISSN();
+        Authors = authors;
+        Type = type;
+    }
+    
+    [JsonConstructor]
+    protected Article(string title,
+                    string text,
+                    string[] keywords,
+                    DateTime publishedAt,
+                    ArticleType type,
+                    List<Author> authors,
+                    string issn = "")
+    {
+        Title = title;
+        Text = text;
+        Keywords = keywords;
+        PublishedAt = publishedAt;
+        ISSN = string.IsNullOrWhiteSpace(issn) ? GenerateISSN() : issn;
         Authors = authors;
         Type = type;
     }

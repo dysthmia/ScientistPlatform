@@ -1,5 +1,5 @@
 using Model.Interfaces;
-
+using Newtonsoft.Json;
 namespace Model.Core;
 
 public class CaseStudy : Article
@@ -19,4 +19,19 @@ public class CaseStudy : Article
         CaseDescription = caseDescription;
         Conclusions = conclusions;
     } 
+    
+    [JsonConstructor]
+    public CaseStudy(string title,
+                     string text,
+                     string[] keywords,
+                     List<Author> authors,
+                     DateTime publishedAt,
+                     string caseDescription = "",
+                     string conclusions = "",
+                     string issn = "")
+        : base(title, text, keywords, publishedAt, ArticleType.CaseStudy, authors, issn)
+    {
+        CaseDescription = caseDescription;
+        Conclusions = conclusions;
+    }
 }
