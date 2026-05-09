@@ -1,15 +1,14 @@
 using Model.Core;
-
 namespace Model.Interfaces;
 
-public interface Article
+public interface IArticle
 {
-    string Title { get; set; }
-    string Text { get; set; }
-    string[] Keywords { get; set; }
-    DateTime PublishedAt { get; set; }
-    string ISSN { get; set; }
-    List<Author> Authors { get; set; }
+    string Title { get; }
+    string Text { get; }
+    string[] Keywords { get; }
+    DateTime PublishedAt { get; }
+    string ISSN { get; }
+    List<Author> Authors { get; }
     ArticleType Type { get; }
 }
 
