@@ -23,6 +23,9 @@ public class DtoArticle
     public string CaseDescription { get; set; }
     public string Conclusions { get; set; }
 
+    public DtoArticle()
+    {
+    }
     public DtoArticle(Article article)
     {
         Title = article.Title;
