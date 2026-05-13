@@ -1,3 +1,5 @@
+using System.Runtime.Intrinsics.Arm;
+
 namespace Model.Core;
 
 public class Author
@@ -18,4 +20,17 @@ public class Author
         var random = new Random();
         return $"{random.Next(0000, 9999):D4}-{random.Next(0000, 9999):D4}-{random.Next(0000, 9999):D4}-{random.Next(0000, 9999):D4}";
     }
+
+    private bool HasArticle (string issn)
+    {
+        if (string.IsNullOrWhiteSpace(issn)) return false;
+        return Articles.Any(a => a.ISSN == issn);
+    }      
+    public void AddArticle (Article article)
+    {
+        if (article == null || HasArticle(article.ISSN)) return;
+        Articles.Add(article);
+    }
+    public void RemoveArticle (Article article) => 
+        Articles.Remove(article);
 }
