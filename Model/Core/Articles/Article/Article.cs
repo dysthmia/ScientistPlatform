@@ -19,6 +19,8 @@ public partial class Article : IArticle
                       ArticleType type,
                       List<Author> authors)
     {
+        if (authors == null || authors.Count > 10) return;
+        
         Title = title;
         Text = text;
         KeyWords = keywords;
@@ -51,28 +53,28 @@ public partial class Article : IArticle
         var random = new Random();
         return $"{random.Next(0000, 9999):D4}-{random.Next(0000, 9999):D4}";
     }
-}
 
-public partial class Article
-{
-    public Publisher Publisher { get; private set; }
-
-    public bool AddPublisher(Publisher publisher)
+    public bool HasKeyWords (params string[] keywords)
     {
-        if (publisher == null) return false;
-
-        bool mathcesTheme = KeyWords.Any(Keywords => publisher.Themes.Any(theme => theme.Equals(Keywords, StringComparison.OrdinalIgnoreCase)));
-
-        if (!mathcesTheme) return false;
-
-        Publisher = publisher;
-        return true;
+        if (keywords == null || keywords.Length == 0) return false;
+        foreach (var keyword in keywords)
+        {
+            if (KeyWords.Any(k => k == keyword)) return true;
+        }
+        return false;
     }
-
-    public void RemovePublisher() => Publisher = null!;
+    
+    private bool HasAuthor(string orcid)
+    {
+        if (string.IsNullOrWhiteSpace(orcid)) return false;
+        return Authors.Any(a => a.ORCID == orcid);
+    }
+    public void AddAuthor (Author author)
+    {
+        if (author == null || HasAuthor(author.ORCID)) return;
+        Authors.Add(author);
+    }
+    public void RemoveAuthor (Author author) =>
+        Authors.Remove(author);
 }
 
-public partial class Article : ICitation
-{
-    public string Citation { get; private set; }
-}
