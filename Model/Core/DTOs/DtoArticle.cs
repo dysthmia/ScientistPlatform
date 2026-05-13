@@ -30,7 +30,7 @@ public class DtoArticle
     {
         Title = article.Title;
         Text = article.Text;
-        Keywords = article.Keywords;
+        Keywords = article.KeyWords;
         PublishedAt = article.PublishedAt;
         ISSN = article.ISSN;
         AuthorsNames = article.Authors.Select(a => a.Name).ToArray();

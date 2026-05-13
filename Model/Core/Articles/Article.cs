@@ -6,7 +6,7 @@ public partial class Article : IArticle
 {
     public string Title { get; private set; }
     public string Text { get; private set; }
-    public string[] Keywords { get; private set; }
+    public string[] KeyWords { get; private set; }
     public DateTime PublishedAt { get; private set; }
     public string ISSN { get; private set; }
     public List<Author> Authors { get; private set; }
@@ -21,7 +21,7 @@ public partial class Article : IArticle
     {
         Title = title;
         Text = text;
-        Keywords = keywords;
+        KeyWords = keywords;
         PublishedAt = publishedAt;
         ISSN = GenerateISSN();
         Authors = authors;
@@ -39,7 +39,7 @@ public partial class Article : IArticle
     {
         Title = title;
         Text = text;
-        Keywords = keywords;
+        KeyWords = keywords;
         PublishedAt = publishedAt;
         ISSN = string.IsNullOrWhiteSpace(issn) ? GenerateISSN() : issn;
         Authors = authors;
@@ -61,7 +61,7 @@ public partial class Article
     {
         if (publisher == null) return false;
 
-        bool mathcesTheme = Keywords.Any(Keywords => publisher.Themes.Any(theme => theme.Equals(Keywords, StringComparison.OrdinalIgnoreCase)));
+        bool mathcesTheme = KeyWords.Any(Keywords => publisher.Themes.Any(theme => theme.Equals(Keywords, StringComparison.OrdinalIgnoreCase)));
 
         if (!mathcesTheme) return false;
 
@@ -74,5 +74,5 @@ public partial class Article
 
 public partial class Article : ICitation
 {
-    public string Citiation { get; private set; }
+    public string Citation { get; private set; }
 }
