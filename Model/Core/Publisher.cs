@@ -10,7 +10,9 @@ public class Publisher
     public Publisher(string name, double rating, List<string> themes)
     {      
         ValidateName(name);
-        _themes = CheckAndCopyThemes(themes);
+
+        _themes = new List<string>();
+        AddTheme(themes);
 
         Name = name;
         Rating = rating;
@@ -18,19 +20,20 @@ public class Publisher
 
     public void AddTheme (string theme)
     {
-        if (!CheckAvailabilityTheme(theme)) _themes.Add(theme);
+        if (!CheckAvailabilityTheme(theme)) 
+            _themes.Add(theme);
+    }
+    public void AddTheme (List<string> themes)
+    {
+        foreach (var theme in themes) 
+            AddTheme(theme);
     }
     public void RemoveTheme (string theme)
     {
-        if (CheckAvailabilityTheme(theme)) _themes.Remove(theme);
+        if (CheckAvailabilityTheme(theme))
+            _themes.Remove(theme);
     }
 
-    private List<string> CheckAndCopyThemes(List<string> themes)
-    {
-        List<string> checked_themes = new List<string>();
-        foreach(var theme in themes) AddTheme(theme);
-        return checked_themes;
-    }
     private bool CheckAvailabilityTheme (string theme)
     {
         if (string.IsNullOrWhiteSpace(theme))
