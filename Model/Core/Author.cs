@@ -29,6 +29,10 @@ public class Author
     {
        if (!CheckAvailabilityArticle(article)) _articles.Add(article);
     }
+    public void AddArticle (List<Article> articles)
+    {
+        foreach (var article in articles) AddArticle(article);
+    }
     public void RemoveArticle (Article article)
     {
         if (CheckAvailabilityArticle(article)) _articles.Remove(article);
