@@ -2,50 +2,64 @@ using Model.Interfaces;
 using Newtonsoft.Json;
 namespace Model.Core;
 
-public partial class Article : IArticle
+public abstract partial  class Article : IArticle
 {
-    public string Title { get; private set; }
-    public string Text { get; private set; }
-    public string[] KeyWords { get; private set; }
-    public DateTime PublishedAt { get; private set; }
-    public string ISSN { get; private set; }
-    public List<Author> Authors { get; private set; }
-    public ArticleType Type { get; private set; }
+    private const int MaxAuthorsCount = 10;
 
-    public Article (string title, 
-                      string text, 
-                      string[] keywords, 
-                      DateTime publishedAt, 
-                      ArticleType type,
-                      List<Author> authors)
+    private List<Author> _authors;
+    private string[] _keywords;
+
+    public string Text { get; private set; }
+    public string ISSN { get; private set; }
+    public string Title { get; private set; }
+    public ArticleType Type { get; private set; }
+    public DateTime PublishedAt { get; private set; }
+
+    public string[] KeyWords => _keywords.ToArray();
+    public Author[] Authors => _authors.ToArray();
+
+    public Article  (string title, 
+                    string text, 
+                    string[] keywords, 
+                    ArticleType type,
+                    List<Author> authors)
     {
-        if (authors == null || authors.Count > 10) return;
+        ValidateTitle(title);
+        ValidateText(text);
+
+        _keywords = ValidateAndCopyKeywords(keywords);
+        _authors = ValidateAndCopyAuthors(authors);
         
         Title = title;
         Text = text;
-        KeyWords = keywords;
-        PublishedAt = publishedAt;
-        ISSN = GenerateISSN();
-        Authors = authors;
         Type = type;
+
+        PublishedAt = DateTime.Now;
+        ISSN = GenerateISSN();
     }
     
     [JsonConstructor]
-    protected Article(string title,
-                    string text,
-                    string[] keywords,
-                    DateTime publishedAt,
-                    ArticleType type,
-                    List<Author> authors,
-                    string issn = "")
+    protected Article   (string title,
+                        string text,
+                        string[] keywords,
+                        DateTime publishedAt,
+                        ArticleType type,
+                        List<Author> authors,
+                        string issn = "")
     {
+        ValidateTitle(title);
+        ValidateText(text);
+        ValidatePublishedAt(publishedAt);
+
+        _keywords = ValidateAndCopyKeywords(keywords);
+        _authors = ValidateAndCopyAuthors(authors);
+
         Title = title;
         Text = text;
-        KeyWords = keywords;
+        Type = type;
+        
         PublishedAt = publishedAt;
         ISSN = string.IsNullOrWhiteSpace(issn) ? GenerateISSN() : issn;
-        Authors = authors;
-        Type = type;
     }
 
     private static string GenerateISSN()
@@ -54,27 +68,86 @@ public partial class Article : IArticle
         return $"{random.Next(0000, 9999):D4}-{random.Next(0000, 9999):D4}";
     }
 
-    public bool HasKeyWords (params string[] keywords)
+    public bool HasKeyWords(params string[] keywords)
     {
-        if (keywords == null || keywords.Length == 0) return false;
-        foreach (var keyword in keywords)
-        {
-            if (KeyWords.Any(k => k == keyword)) return true;
-        }
-        return false;
-    }
-    
-    private bool HasAuthor(string orcid)
-    {
-        if (string.IsNullOrWhiteSpace(orcid)) return false;
-        return Authors.Any(a => a.ORCID == orcid);
+        string[] checkedKeywords = ValidateAndCopyKeywords(keywords);
+        return checkedKeywords.Any(keyword => _keywords.Contains(keyword));
     }
     public void AddAuthor (Author author)
     {
-        if (author == null || HasAuthor(author.ORCID)) return;
-        Authors.Add(author);
+        ValidateAuthor(author);
+        bool has_author = _authors.Any(a => a.ORCID == author.ORCID);
+
+        if (has_author)
+            throw new InvalidOperationException("Author уже есть в списке авторов в Article");
+        
+        if (_authors.Count() >= MaxAuthorsCount)
+            throw new InvalidOperationException($"Авторов не может быть больше {MaxAuthorsCount}.");
+
+        _authors.Add(author);
     }
-    public void RemoveAuthor (Author author) =>
-        Authors.Remove(author);
+    public void RemoveAuthor (Author author)
+    {
+        ValidateAuthor(author);
+        _authors.Remove(author); 
+    }
+
+    private void ValidateTitle(string title)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+            throw new ArgumentException("Title не может быть пустым.", nameof(title));
+    }
+    private void ValidateText(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            throw new ArgumentException("Text не может быть пустым.", nameof(text));
+    }
+    private string[] ValidateAndCopyKeywords(string[] keywords)
+    {
+        if (keywords == null)
+            throw new ArgumentNullException(nameof(keywords), "Keywords null типа.");
+
+        if (keywords.Length == 0)
+            throw new ArgumentException("Keywords не может быть пустым.", nameof(keywords));
+
+        if (keywords.Any(string.IsNullOrWhiteSpace))
+            throw new ArgumentException(
+                "Keywords не должен содержать null, пустые строки или пробелы.",
+                nameof(keywords));
+
+        return keywords.ToArray();
+    }
+    private List<Author> ValidateAndCopyAuthors(List<Author> authors)
+    {
+        if (authors == null)
+            throw new ArgumentNullException(nameof(authors), "Authors null типа.");
+
+        if (authors.Count > MaxAuthorsCount)
+            throw new ArgumentOutOfRangeException(nameof(authors), $"Authors не может быть больше {MaxAuthorsCount}.");
+
+        foreach (var author in authors) ValidateAuthor(author);
+
+        bool hasDuplicateOrcid = authors
+            .GroupBy(author => author.ORCID)
+            .Any(group => group.Count() > 1);
+
+        if (hasDuplicateOrcid)
+            throw new ArgumentException("Authors не должен содержать авторов с одинаковым ORCID.",nameof(authors));
+
+        return authors.ToList();
+    }
+    private void ValidatePublishedAt(DateTime publishedAt)
+    {
+        if (publishedAt > DateTime.Now)
+            throw new ArgumentOutOfRangeException(nameof(publishedAt),"Дата публикации не может быть в будущем.");
+    }
+    private void ValidateAuthor(Author author)
+    {
+        if (author == null)
+            throw new ArgumentNullException(nameof(author), "Author null типа.");
+
+        if (string.IsNullOrWhiteSpace(author.ORCID))
+            throw new ArgumentException("ORCID автора не может быть пустым.", nameof(author));
+    }
 }
 
