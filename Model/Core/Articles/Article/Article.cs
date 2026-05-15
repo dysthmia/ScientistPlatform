@@ -28,7 +28,9 @@ public abstract partial  class Article : IArticle
         ValidateText(text);
 
         _keywords = ValidateAndCopyKeywords(keywords);
-        _authors = ValidateAndCopyAuthors(authors);
+
+        _authors = new List<Author>();
+        AddAuthor(authors);
         
         Title = title;
         Text = text;
@@ -52,7 +54,8 @@ public abstract partial  class Article : IArticle
         ValidatePublishedAt(publishedAt);
 
         _keywords = ValidateAndCopyKeywords(keywords);
-        _authors = ValidateAndCopyAuthors(authors);
+        _authors = new List<Author>();
+        AddAuthor(authors);
 
         Title = title;
         Text = text;
@@ -71,25 +74,32 @@ public abstract partial  class Article : IArticle
     public bool HasKeyWords(params string[] keywords)
     {
         string[] checkedKeywords = ValidateAndCopyKeywords(keywords);
-        return checkedKeywords.Any(keyword => _keywords.Contains(keyword));
+        return checkedKeywords.Any(keyword =>
+            _keywords.Contains(keyword, StringComparer.OrdinalIgnoreCase));
     }
-    public void AddAuthor (Author author)
+    public void AddKeyWords(params string[] keywords)
+    {
+        string[] newKeywords = ValidateAndCopyNewKeywords(keywords);
+        if (newKeywords.Length == 0) return;
+        _keywords = _keywords.Concat(newKeywords).ToArray();
+    }
+    public void AddAuthor(Author author)
     {
         ValidateAuthor(author);
-        bool has_author = _authors.Any(a => a.ORCID == author.ORCID);
-
-        if (has_author)
-            throw new InvalidOperationException("Author уже есть в списке авторов в Article");
-        
-        if (_authors.Count() >= MaxAuthorsCount)
+        if (HasAuthor(author)) return;
+        if (_authors.Count >= MaxAuthorsCount)
             throw new InvalidOperationException($"Авторов не может быть больше {MaxAuthorsCount}.");
 
         _authors.Add(author);
     }
-    public void RemoveAuthor (Author author)
+    public void AddAuthor (List<Author> authors)
+    {
+        foreach (var author in authors) AddAuthor(author);
+    }
+    public void RemoveAuthor(Author author)
     {
         ValidateAuthor(author);
-        _authors.Remove(author); 
+        _authors.Remove(author);
     }
 
     private void ValidateTitle(string title)
@@ -102,7 +112,7 @@ public abstract partial  class Article : IArticle
         if (string.IsNullOrWhiteSpace(text))
             throw new ArgumentException("Text не может быть пустым.", nameof(text));
     }
-    private string[] ValidateAndCopyKeywords(string[] keywords)
+    private static string[] ValidateAndCopyKeywords(string[] keywords)
     {
         if (keywords == null)
             throw new ArgumentNullException(nameof(keywords), "Keywords null типа.");
@@ -115,33 +125,25 @@ public abstract partial  class Article : IArticle
                 "Keywords не должен содержать null, пустые строки или пробелы.",
                 nameof(keywords));
 
-        return keywords.ToArray();
+        return keywords
+            .Select(keyword => keyword.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
     }
-    private List<Author> ValidateAndCopyAuthors(List<Author> authors)
+    private string[] ValidateAndCopyNewKeywords(string[] keywords)
     {
-        if (authors == null)
-            throw new ArgumentNullException(nameof(authors), "Authors null типа.");
+        string[] checkedKeywords = ValidateAndCopyKeywords(keywords);
 
-        if (authors.Count > MaxAuthorsCount)
-            throw new ArgumentOutOfRangeException(nameof(authors), $"Authors не может быть больше {MaxAuthorsCount}.");
-
-        foreach (var author in authors) ValidateAuthor(author);
-
-        bool hasDuplicateOrcid = authors
-            .GroupBy(author => author.ORCID)
-            .Any(group => group.Count() > 1);
-
-        if (hasDuplicateOrcid)
-            throw new ArgumentException("Authors не должен содержать авторов с одинаковым ORCID.",nameof(authors));
-
-        return authors.ToList();
+        return checkedKeywords
+            .Where(keyword => !_keywords.Contains(keyword, StringComparer.OrdinalIgnoreCase))
+            .ToArray();
     }
     private void ValidatePublishedAt(DateTime publishedAt)
     {
         if (publishedAt > DateTime.Now)
             throw new ArgumentOutOfRangeException(nameof(publishedAt),"Дата публикации не может быть в будущем.");
     }
-    private void ValidateAuthor(Author author)
+    private static void ValidateAuthor(Author author)
     {
         if (author == null)
             throw new ArgumentNullException(nameof(author), "Author null типа.");
@@ -149,5 +151,8 @@ public abstract partial  class Article : IArticle
         if (string.IsNullOrWhiteSpace(author.ORCID))
             throw new ArgumentException("ORCID автора не может быть пустым.", nameof(author));
     }
+    private bool HasAuthor(Author author) =>
+        _authors.Any(a => a.ORCID == author.ORCID);
+    
 }
 
