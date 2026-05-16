@@ -1,6 +1,6 @@
 namespace Model.Core;
 
-public partial class Article
+public abstract partial class Article
 {
     public Publisher Publisher { get; private set; }
     public void AddPublisher(Publisher publisher)

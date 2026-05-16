@@ -8,7 +8,7 @@ public interface IArticle
     string[] KeyWords { get; }
     DateTime PublishedAt { get; }
     string ISSN { get; }
-    List<Author> Authors { get; }
+    Author[] Authors { get; }
     ArticleType Type { get; }
 }
 

@@ -4,15 +4,19 @@ namespace Model.Core;
 
 public class Author
 {
+    private List<Article> _articles;
+
     public string Name { get; private set; }
     public string ORCID { get; private set; }
-    public List<Article> Articles { get; private set; }
+    public Article[] Articles  => _articles.ToArray();
 
     public Author(string name)
     {
+        ValidateName(name);
+
         Name = name;
         ORCID = GenerateORCID();
-        Articles = new List<Article>();
+        _articles = new List<Article>();
     }
 
     private static string GenerateORCID()
@@ -21,16 +25,32 @@ public class Author
         return $"{random.Next(0000, 9999):D4}-{random.Next(0000, 9999):D4}-{random.Next(0000, 9999):D4}-{random.Next(0000, 9999):D4}";
     }
 
-    private bool HasArticle (string issn)
-    {
-        if (string.IsNullOrWhiteSpace(issn)) return false;
-        return Articles.Any(a => a.ISSN == issn);
-    }      
     public void AddArticle (Article article)
     {
-        if (article == null || HasArticle(article.ISSN)) return;
-        Articles.Add(article);
+       if (!CheckAvailabilityArticle(article)) _articles.Add(article);
     }
-    public void RemoveArticle (Article article) => 
-        Articles.Remove(article);
+    public void AddArticle (List<Article> articles)
+    {
+        foreach (var article in articles) AddArticle(article);
+    }
+    public void RemoveArticle (Article article)
+    {
+        if (CheckAvailabilityArticle(article)) _articles.Remove(article);
+    }
+    
+    private bool CheckAvailabilityArticle(Article article)
+    {
+        if (article == null)
+            throw new ArgumentNullException(nameof(article), "Article null типа");
+        
+        if (string.IsNullOrWhiteSpace(article.ISSN))
+            throw new ArgumentException(nameof(article), "ISSN не может быть пустым");
+        
+        return _articles.Any(a => a.ISSN == article.ISSN);
+    }
+    private void ValidateName (string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException(nameof(name), "name автора не может быть пустым");
+    }
 }

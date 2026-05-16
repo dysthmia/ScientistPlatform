@@ -11,10 +11,9 @@ public class CaseStudy : Article
                       string text, 
                       string[] keyWords,
                       List<Author> authors, 
-                      DateTime publishedAt,
                       string caseDescription = "",
                       string conclusions = "")
-        : base (title, text, keyWords, publishedAt, ArticleType.CaseStudy, authors)
+        : base (title, text, keyWords, ArticleType.CaseStudy, authors)
     {
         CaseDescription = caseDescription;
         Conclusions = conclusions;
