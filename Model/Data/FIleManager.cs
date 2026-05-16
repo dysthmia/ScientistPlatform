@@ -1,5 +1,4 @@
 using Model.Core;
-using Model.Interfaces;
 
 namespace Model.Data;
 public abstract class FileManager<T> where T : Article

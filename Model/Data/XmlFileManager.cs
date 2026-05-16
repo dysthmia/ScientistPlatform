@@ -10,7 +10,7 @@ public class XmlFileManager<T> : FileManager<T>
 {
     public XmlFileManager  (string file_name, 
                             string folder_path) 
-                            : base(file_name, "txt", folder_path)
+                            : base(file_name, "xml", folder_path)
     {
     }
 

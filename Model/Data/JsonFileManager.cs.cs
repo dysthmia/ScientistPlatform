@@ -1,6 +1,4 @@
 ﻿using Model.Core;
-using Model.Interfaces;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Model.Data;

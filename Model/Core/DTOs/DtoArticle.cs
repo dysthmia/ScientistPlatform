@@ -61,4 +61,13 @@ public class DtoArticle
             Conclusions = caseStudy.Conclusions;
         }
     }
+
+    public bool ShouldSerializeMethodology() => !string.IsNullOrWhiteSpace(Methodology);
+    public bool ShouldSerializeResults() => !string.IsNullOrWhiteSpace(Results);
+    
+    public bool ShouldSerializeSources() => Sources != null && Sources.Length > 0;
+    public bool ShouldSerializeReviewPeriod() => !string.IsNullOrWhiteSpace(ReviewPeriod);
+    
+    public bool ShouldSerializeCaseDescription() => !string.IsNullOrWhiteSpace(CaseDescription);
+    public bool ShouldSerializeConclusions() => !string.IsNullOrWhiteSpace(Conclusions);
 }
