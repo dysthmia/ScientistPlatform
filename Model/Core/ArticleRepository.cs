@@ -38,7 +38,7 @@ public static class ArticleRepository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to deserialize '{file}': {ex.GetType().Name}: {ex.Message}");
+                throw new Exception($"Failed to deserialize '{file}'", ex);
             }
         }
 
@@ -73,8 +73,6 @@ public static class ArticleRepository
                 caseDescription: "Description here",
                 conclusions: "Conclusions here")
         };
-
-        Directory.CreateDirectory(_folder);
 
         int i = 1;
         foreach (var article in samples)

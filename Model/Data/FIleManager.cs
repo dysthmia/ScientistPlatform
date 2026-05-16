@@ -3,9 +3,9 @@ using Model.Core;
 namespace Model.Data;
 public abstract class FileManager<T> where T : Article
 {
-    public string FileName {get; private set;}
-    public string FileExtension {get; private set;}
-    public string FolderPath {get; private set;}
+    public string FileName { get; private set; }
+    public string FileExtension { get; private set; }
+    public string FolderPath { get; private set; }
     public string FullPath =>
         Path.Combine(FolderPath, $"{FileName}.{FileExtension}");
 
