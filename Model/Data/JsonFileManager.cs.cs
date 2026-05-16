@@ -1,4 +1,5 @@
 ﻿using Model.Core;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Model.Data;
@@ -6,6 +7,13 @@ namespace Model.Data;
 public class JsonFileManager<T> : FileManager<T>
     where T : Article
 {
+    private static readonly JsonSerializerSettings JsonSettings = new()
+    {
+        TypeNameHandling = TypeNameHandling.Objects,
+        Formatting = Formatting.Indented,
+        NullValueHandling = NullValueHandling.Ignore
+    };
+
     public JsonFileManager (string file_name, 
                             string file_extension) 
                             : base(file_name, file_extension, "json")
@@ -17,7 +25,7 @@ public class JsonFileManager<T> : FileManager<T>
         if (obj == null) return;
         Directory.CreateDirectory(FolderPath!);
 
-        JObject json_object = JObject.FromObject(obj);
+        JObject json_object = JObject.FromObject(obj, JsonSerializer.Create(JsonSettings));
         string string_json_object = json_object.ToString();
 
         File.WriteAllText(FullPath, string_json_object);
@@ -31,7 +39,7 @@ public class JsonFileManager<T> : FileManager<T>
         if (string.IsNullOrWhiteSpace(string_json_object)) return null!;
 
         JObject json_object = JObject.Parse(string_json_object);
-        object? obj = json_object.ToObject<T>();
+        object? obj = json_object.ToObject<T>(JsonSerializer.Create(JsonSettings));
         if (obj == null) return null!;
 
         return (T)obj;

@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+using Model.Data;
 
 namespace Model.Core;
 public static class ArticleRepository
@@ -6,23 +6,14 @@ public static class ArticleRepository
     private const string _folder = "json";
     private const string _extension = "json";
 
-    private static readonly JsonSerializerSettings JsonSettings = new()
-    {
-        TypeNameHandling = TypeNameHandling.Objects,
-        Formatting = Formatting.Indented,
-        NullValueHandling = NullValueHandling.Ignore
-    };
-
     public static List<Article> LoadAll()
     {
         Directory.CreateDirectory(_folder);
 
-        var files = Directory.EnumerateFiles(_folder, $"*.{_extension}").ToList();
-        if (!files.Any())
-        {
+        if (!Directory.EnumerateFiles(_folder, $"*.{_extension}").Any())
             SeedSampleFiles();
-            files = Directory.EnumerateFiles(_folder, $"*.{_extension}").ToList();
-        }
+
+        var files = Directory.EnumerateFiles(_folder, $"*.{_extension}").ToList();
 
         var result = new List<Article>();
 
@@ -30,57 +21,83 @@ public static class ArticleRepository
         {
             try
             {
-                var text = File.ReadAllText(file);
-                if (string.IsNullOrWhiteSpace(text)) continue;
+                var fileName = Path.GetFileNameWithoutExtension(file);
+                var manager = new JsonFileManager<Article>(fileName, _extension);
+                manager.ChangeFolderPath(_folder);
 
-                var article = JsonConvert.DeserializeObject<Article>(text, JsonSettings);
-                if (article != null) result.Add(article);
+                var article = manager.Deserialize();
+                if (article != null)
+                    result.Add(article);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Failed to deserialize '{file}'", ex);
+                throw new Exception($"Failed to load article from file '{file}': {ex.Message}", ex);
             }
         }
 
         return result;
     }
 
+    public static void SaveArticle(Article article, string fileName)
+    {
+        try
+        {
+            var manager = new JsonFileManager<Article>(fileName, _extension);
+            manager.ChangeFolderPath(_folder);
+            manager.Serialize(article);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Failed to save article: {ex.Message}", ex);
+        }
+    }
+
     private static void SeedSampleFiles()
     {
-        var samples = new List<Article>
+        var samples = new List<(Article article, string fileName)>
         {
-            new ResearchArticle(
-                "Effects of X on Y",
-                "Introductory study of X...",
-                new[] { "X", "Y", "study" },
-                new List<Author> { new Author("Ivan Petrov") },
-                methodology: "Quantitative",
-                results: "Significant"),
-
-            new ReviewArticle(
-                "A review of Z literature",
-                "Comprehensive review...",
-                new[] { "Z", "review" },
-                new List<Author> { new Author("Anna Ivanova"), new Author("Pavel Sidorov") },
-                sources: new[] { "Source A", "Source B" },
-                reviewPeriod: "2010-2020"),
-
-            new CaseStudy(
-                "Case study: unusual event",
-                "Detailed account of the case...",
-                new[] { "case", "event" },
-                new List<Author> { new Author("Olga Smirnova") },
-                caseDescription: "Description here",
-                conclusions: "Conclusions here")
+            (
+                new ResearchArticle(
+                    "Effects of X on Y",
+                    "Introductory study of X...",
+                    new[] { "X", "Y", "study" },
+                    new List<Author> { new Author("Ivan Petrov") },
+                    methodology: "Quantitative",
+                    results: "Significant"),
+                "article_1"
+            ),
+            (
+                new ReviewArticle(
+                    "A review of Z literature",
+                    "Comprehensive review...",
+                    new[] { "Z", "review" },
+                    new List<Author> { new Author("Anna Ivanova"), new Author("Pavel Sidorov") },
+                    sources: new[] { "Source A", "Source B" },
+                    reviewPeriod: "2010-2020"),
+                "article_2"
+            ),
+            (
+                new CaseStudy(
+                    "Case study: unusual event",
+                    "Detailed account of the case...",
+                    new[] { "case", "event" },
+                    new List<Author> { new Author("Olga Smirnova") },
+                    caseDescription: "Description here",
+                    conclusions: "Conclusions here"),
+                "article_3"
+            )
         };
 
-        int i = 1;
-        foreach (var article in samples)
+        foreach (var (article, fileName) in samples)
         {
-            var file = Path.Combine(_folder, $"article_{i}.{_extension}");
-            var text = JsonConvert.SerializeObject(article, JsonSettings);
-            File.WriteAllText(file, text);
-            i++;
+            try
+            {
+                SaveArticle(article, fileName);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to seed article '{fileName}': {ex.Message}", ex);
+            }
         }
     }
 }
