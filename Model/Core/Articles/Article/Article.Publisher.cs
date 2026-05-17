@@ -6,14 +6,15 @@ public abstract partial class Article
     public void AddPublisher(Publisher publisher)
     {
         if (publisher == null) return;
-        bool mathcesTheme = KeyWords
-                            .Any(Keywords => publisher
-                            .Themes
-                            .Any(theme => theme
-                            .Equals(Keywords, StringComparison.OrdinalIgnoreCase)));
 
-        if (!mathcesTheme) return;
+        bool matchesTheme = KeyWords
+            .Any(keyword => publisher.Themes
+                .Any(theme => theme.Equals(keyword, StringComparison.OrdinalIgnoreCase)));
+
+        if (!matchesTheme) return;
+
         Publisher = publisher;
+        FormatCitation(publisher);
     }
     public void RemovePublisher() => Publisher = null!;
 }

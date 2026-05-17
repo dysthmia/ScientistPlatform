@@ -1,5 +1,3 @@
-using System.Runtime.Intrinsics.Arm;
-
 namespace Model.Core;
 
 public class Author
