@@ -26,9 +26,8 @@ public class JsonFileManager<T> : FileManager<T>
         Directory.CreateDirectory(FolderPath!);
 
         JObject json_object = JObject.FromObject(obj, JsonSerializer.Create(JsonSettings));
-        string string_json_object = json_object.ToString();
 
-        File.WriteAllText(FullPath, string_json_object);
+        File.WriteAllText(FullPath, json_object.ToString());
         
     }
     public T Deserialize()

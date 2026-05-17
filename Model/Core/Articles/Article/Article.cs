@@ -38,6 +38,7 @@ public abstract partial  class Article : IArticle
 
         PublishedAt = DateTime.Now;
         ISSN = GenerateISSN();
+        FormatDefaultCitation();
     }
     
     [JsonConstructor]
@@ -63,6 +64,7 @@ public abstract partial  class Article : IArticle
         
         PublishedAt = publishedAt;
         ISSN = string.IsNullOrWhiteSpace(issn) ? GenerateISSN() : issn;
+        FormatDefaultCitation();
     }
 
     private static string GenerateISSN()

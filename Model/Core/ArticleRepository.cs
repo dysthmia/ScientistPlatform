@@ -3,17 +3,17 @@ using Model.Data;
 namespace Model.Core;
 public static class ArticleRepository
 {
-    private const string _folder = "json";
-    private const string _extension = "json";
+    private const string Folder = "json";
+    private const string Extension = "json";
 
     public static List<Article> LoadAll()
     {
-        Directory.CreateDirectory(_folder);
+        Directory.CreateDirectory(Folder);
 
-        if (!Directory.EnumerateFiles(_folder, $"*.{_extension}").Any())
+        if (!Directory.EnumerateFiles(Folder, $"*.{Extension}").Any())
             SeedSampleFiles();
 
-        var files = Directory.EnumerateFiles(_folder, $"*.{_extension}").ToList();
+        var files = Directory.EnumerateFiles(Folder, $"*.{Extension}").ToList();
 
         var result = new List<Article>();
 
@@ -22,12 +22,15 @@ public static class ArticleRepository
             try
             {
                 var fileName = Path.GetFileNameWithoutExtension(file);
-                var manager = new JsonFileManager<Article>(fileName, _extension);
-                manager.ChangeFolderPath(_folder);
+                var manager = new JsonFileManager<Article>(fileName, Extension);
+                manager.ChangeFolderPath(Folder);
 
                 var article = manager.Deserialize();
                 if (article != null)
+                {
+                    article.FormatDefaultCitation();
                     result.Add(article);
+                }
             }
             catch (Exception ex)
             {
@@ -42,8 +45,8 @@ public static class ArticleRepository
     {
         try
         {
-            var manager = new JsonFileManager<Article>(fileName, _extension);
-            manager.ChangeFolderPath(_folder);
+            var manager = new JsonFileManager<Article>(fileName, Extension);
+            manager.ChangeFolderPath(Folder);
             manager.Serialize(article);
         }
         catch (Exception ex)

@@ -1,3 +1,5 @@
+using Model.Interfaces;
+
 namespace Model.Core;
 
 public class Publisher
@@ -5,10 +7,15 @@ public class Publisher
     private List<string> _themes;
     public string Name { get; private set; }
     public double Rating { get; private set; }
+    public PublisherCitationStyle CitationStyle { get; private set; }
     public string[] Themes => _themes.ToArray();
 
-    public Publisher(string name, double rating, List<string> themes)
-    {      
+    public Publisher(
+        string name,
+        double rating,
+        List<string> themes,
+        PublisherCitationStyle citationStyle = PublisherCitationStyle.Apa)
+    {
         ValidateName(name);
 
         _themes = new List<string>();
@@ -16,6 +23,7 @@ public class Publisher
 
         Name = name;
         Rating = rating;
+        CitationStyle = citationStyle;
     } 
 
     public void AddTheme (string theme)
