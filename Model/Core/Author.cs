@@ -1,3 +1,5 @@
+
+using Newtonsoft.Json;
 namespace Model.Core;
 
 public class Author
@@ -6,6 +8,8 @@ public class Author
 
     public string Name { get; private set; }
     public string ORCID { get; private set; }
+    
+    [JsonIgnore]
     public Article[] Articles  => _articles.ToArray();
 
     public Author(string name)
@@ -16,7 +20,6 @@ public class Author
         ORCID = GenerateORCID();
         _articles = new List<Article>();
     }
-
     private static string GenerateORCID()
     {
         var random = new Random();
