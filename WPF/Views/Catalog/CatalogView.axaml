@@ -1,0 +1,119 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WPF.ViewModels"
+             x:Class="WPF.Views.CatalogView"
+             x:DataType="vm:MainWindowViewModel"
+             Background="#FFFFFF">
+    <UserControl.Styles>
+        <Style Selector="TextBox.searchInput">
+            <Setter Property="Height" Value="46"/>
+            <Setter Property="Padding" Value="17,8"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="#202124"/>
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#4285F4"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="CornerRadius" Value="23"/>
+        </Style>
+        <Style Selector="TextBox.searchInput:focus">
+            <Setter Property="BorderBrush" Value="#4285F4"/>
+        </Style>
+    </UserControl.Styles>
+    <Grid RowDefinitions="134,*">
+        <Border BorderBrush="#DADCE0"
+                BorderThickness="0,0,0,1">
+            <Grid Margin="38,0,39,0"
+                  ColumnDefinitions="Auto,48,Auto,14,*,14,Auto"
+                  VerticalAlignment="Center">
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Sci" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
+                    <TextBlock Text="ent" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
+                    <TextBlock Text="ist" FontSize="36" FontWeight="Bold" Foreground="#FBBC05"/>
+                    <TextBlock Text=" " FontSize="36" FontWeight="Bold"/>
+                    <TextBlock Text="Pla" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
+                    <TextBlock Text="tf" FontSize="36" FontWeight="Bold" Foreground="#34A853"/>
+                    <TextBlock Text="orm" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
+                </StackPanel>
+
+                <Border Grid.Column="2"
+                        Height="45"
+                        Padding="17,0"
+                        CornerRadius="22"
+                        Background="#4285F4">
+                    <TextBlock Text="фильтры"
+                               VerticalAlignment="Center"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               Foreground="#FFFFFF"/>
+                </Border>
+
+                <TextBox Grid.Column="4"
+                         Classes="searchInput">
+                    <TextBox.Resources>
+                        <SolidColorBrush x:Key="TextControlBackground">#FFFFFF</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlBackgroundPointerOver">#FFFFFF</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlBackgroundFocused">#FFFFFF</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlForeground">#202124</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlForegroundPointerOver">#202124</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlForegroundFocused">#202124</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlBorderBrush">#4285F4</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlBorderBrushPointerOver">#4285F4</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlBorderBrushFocused">#4285F4</SolidColorBrush>
+                    </TextBox.Resources>
+                </TextBox>
+
+                <Border Grid.Column="6"
+                        Height="45"
+                        Padding="28,0"
+                        CornerRadius="22"
+                        Background="#4285F4">
+                    <TextBlock Text="поиск"
+                               VerticalAlignment="Center"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               Foreground="#FFFFFF"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Articles}"
+                          Width="782"
+                          Margin="0,52,0,45"
+                          HorizontalAlignment="Center">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ArticleListItemViewModel">
+                        <Border Margin="0,0,0,21"
+                                Padding="19,17,19,17"
+                                MinHeight="128"
+                                BorderBrush="#4285F4"
+                                BorderThickness="3"
+                                CornerRadius="20"
+                                Background="#FFFFFF">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="{Binding Title}"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Foreground="#111111"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding PublishedAt, StringFormat='Опубликовано: {0}'}"
+                                           FontSize="20"
+                                           FontWeight="SemiBold"
+                                           Foreground="#626262"/>
+                                <TextBlock Text="{Binding Authors, StringFormat='Авторы: {0}'}"
+                                           FontSize="20"
+                                           FontWeight="SemiBold"
+                                           Foreground="#626262"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
