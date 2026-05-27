@@ -50,7 +50,19 @@
                 </Border>
 
                 <TextBox Grid.Column="4"
-                         Classes="searchInput"/>
+                         Classes="searchInput">
+                    <TextBox.Resources>
+                        <SolidColorBrush x:Key="TextControlBackground">#FFFFFF</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlBackgroundPointerOver">#FFFFFF</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlBackgroundFocused">#FFFFFF</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlForeground">#202124</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlForegroundPointerOver">#202124</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlForegroundFocused">#202124</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlBorderBrush">#4285F4</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlBorderBrushPointerOver">#4285F4</SolidColorBrush>
+                        <SolidColorBrush x:Key="TextControlBorderBrushFocused">#4285F4</SolidColorBrush>
+                    </TextBox.Resources>
+                </TextBox>
 
                 <Border Grid.Column="6"
                         Height="45"
@@ -70,30 +82,32 @@
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Articles}"
-                          MaxWidth="798"
-                          Margin="0,47,0,45"
+                          Width="782"
+                          Margin="0,52,0,45"
                           HorizontalAlignment="Center">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="vm:ArticleListItemViewModel">
-                        <Border Margin="0,0,0,13"
-                                Padding="23,15,23,17"
-                                MinHeight="106"
-                                BorderBrush="#E1E5EA"
-                                BorderThickness="1"
-                                CornerRadius="12"
+                        <Border Margin="0,0,0,21"
+                                Padding="19,17,19,17"
+                                MinHeight="128"
+                                BorderBrush="#4285F4"
+                                BorderThickness="3"
+                                CornerRadius="20"
                                 Background="#FFFFFF">
-                            <StackPanel Spacing="7">
+                            <StackPanel Spacing="8">
                                 <TextBlock Text="{Binding Title}"
                                            FontSize="20"
                                            FontWeight="Bold"
-                                           Foreground="#1616B8"
+                                           Foreground="#111111"
                                            TextWrapping="Wrap"/>
                                 <TextBlock Text="{Binding PublishedAt, StringFormat='Опубликовано: {0}'}"
-                                           FontSize="14"
-                                           Foreground="#343A40"/>
-                                <TextBlock Text="{Binding Authors}"
-                                           FontSize="14"
-                                           Foreground="#202124"
+                                           FontSize="20"
+                                           FontWeight="SemiBold"
+                                           Foreground="#626262"/>
+                                <TextBlock Text="{Binding Authors, StringFormat='Авторы: {0}'}"
+                                           FontSize="20"
+                                           FontWeight="SemiBold"
+                                           Foreground="#626262"
                                            TextWrapping="Wrap"/>
                             </StackPanel>
                         </Border>
