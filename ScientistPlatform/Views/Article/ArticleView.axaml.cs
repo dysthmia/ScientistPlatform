@@ -1,18 +1,29 @@
 using System;
 using System.Globalization;
+using System.IO;
+using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 using CommunityToolkit.Mvvm.Input;
 using Model.Core;
+using Model.Data;
 using Model.Interfaces;
 
-namespace WPF.ViewModels;
+namespace ScientistPlatform.Views;
 
-public class ArticleViewModel : ViewModelBase
+public partial class ArticleView : UserControl
 {
     private readonly Article _article;
     private readonly Action _goBack;
 
-    public ArticleViewModel(Article article, Action goBack)
+    public ArticleView()
     {
+        InitializeComponent();
+    }
+
+    public ArticleView(Article article, Action goBack)
+    {
+        InitializeComponent();
+        
         _article = article;
         _goBack = goBack;
         
@@ -45,6 +56,15 @@ public class ArticleViewModel : ViewModelBase
         }
         
         BackCommand = new RelayCommand(_goBack);
+        DownloadJsonCommand = new RelayCommand(DownloadJson);
+        DownloadXmlCommand = new RelayCommand(DownloadXml);
+
+        DataContext = this;
+    }
+
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
     }
 
     public string Title { get; }
@@ -68,4 +88,43 @@ public class ArticleViewModel : ViewModelBase
     public bool HasReviewPeriod => !string.IsNullOrEmpty(ReviewPeriod);
 
     public IRelayCommand BackCommand { get; }
+    public IRelayCommand DownloadJsonCommand { get; }
+    public IRelayCommand DownloadXmlCommand { get; }
+
+    private void DownloadJson()
+    {
+        var downloadsPath = GetDownloadsPath();
+        var fileName = GetSafeFileName();
+        var manager = new JsonFileManager<Article>(fileName, downloadsPath);
+        manager.Serialize(_article);
+    }
+
+    private void DownloadXml()
+    {
+        var downloadsPath = GetDownloadsPath();
+        var fileName = GetSafeFileName();
+        var manager = new XmlFileManager<Article>(fileName, downloadsPath);
+        manager.Serialize(_article);
+    }
+
+    private string GetDownloadsPath()
+    {
+        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+        var path = Path.Combine(userProfile, "Downloads");
+        if (Directory.Exists(path)) return path;
+
+        var localizedPath = Path.Combine(userProfile, "Загрузки");
+        if (Directory.Exists(localizedPath)) return localizedPath;
+
+        var desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        return Directory.Exists(desktop) ? desktop : userProfile;
+    }
+
+    private string GetSafeFileName()
+    {
+        var safeName = string.Join("_", Title.Split(Path.GetInvalidFileNameChars()));
+        if (safeName.Length > 100) safeName = safeName.Substring(0, 100);
+        return safeName;
+    }
 }

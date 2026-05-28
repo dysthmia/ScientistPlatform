@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace WPF.Views;
+namespace ScientistPlatform.Views;
 
 public partial class CatalogView : UserControl
 {

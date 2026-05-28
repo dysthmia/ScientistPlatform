@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:WPF.ViewModels"
-             x:Class="WPF.Views.ArticleView"
-             x:DataType="vm:ArticleViewModel"
+             xmlns:local="using:ScientistPlatform.Views"
+             x:Class="ScientistPlatform.Views.ArticleView"
+             x:DataType="local:ArticleView"
              Background="#FFFFFF">
     <UserControl.Styles>
         <Style Selector="Button.nav">
@@ -59,8 +59,8 @@
 
                 <Button Grid.Column="2" Classes="nav" Content="Назад" Command="{Binding BackCommand}"/>
 
-                <Button Grid.Column="6" Classes="export" Content="Скачать в JSON"/>
-                <Button Grid.Column="8" Classes="export" Content="Скачать в XML"/>
+                <Button Grid.Column="6" Classes="export" Content="Скачать в JSON" Command="{Binding DownloadJsonCommand}"/>
+                <Button Grid.Column="8" Classes="export" Content="Скачать в XML" Command="{Binding DownloadXmlCommand}"/>
             </Grid>
         </Border>
 

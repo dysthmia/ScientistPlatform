@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:WPF.ViewModels"
-             x:Class="WPF.Views.CatalogView"
-             x:DataType="vm:MainWindowViewModel"
+             xmlns:local="using:ScientistPlatform"
+             x:Class="ScientistPlatform.Views.CatalogView"
+             x:DataType="local:MainWindow"
              Background="#FFFFFF">
     <UserControl.Styles>
         <Style Selector="TextBox.searchInput">
@@ -17,6 +17,22 @@
         </Style>
         <Style Selector="TextBox.searchInput:focus">
             <Setter Property="BorderBrush" Value="#4285F4"/>
+        </Style>
+
+        <Style Selector="Button.headerAction">
+            <Setter Property="Background" Value="#4285F4"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="28,0"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="CornerRadius" Value="22"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.headerAction:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3367D6"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
         </Style>
         
         <Style Selector="Button.articleItem">
@@ -40,7 +56,7 @@
         <Border BorderBrush="#DADCE0"
                 BorderThickness="0,0,0,1">
             <Grid Margin="38,0,39,0"
-                  ColumnDefinitions="Auto,48,Auto,14,*,14,Auto"
+                  ColumnDefinitions="Auto,48,Auto,14,*,14,Auto,14,Auto,14,Auto"
                   VerticalAlignment="Center">
                 <StackPanel Grid.Column="0"
                             Orientation="Horizontal"
@@ -54,17 +70,7 @@
                     <TextBlock Text="orm" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
                 </StackPanel>
 
-                <Border Grid.Column="2"
-                        Height="45"
-                        Padding="17,0"
-                        CornerRadius="22"
-                        Background="#4285F4">
-                    <TextBlock Text="Фильтры"
-                               VerticalAlignment="Center"
-                               FontSize="22"
-                               FontWeight="Bold"
-                               Foreground="#FFFFFF"/>
-                </Border>
+                <Button Grid.Column="2" Classes="headerAction" Content="Фильтры"/>
 
                 <TextBox Grid.Column="4"
                          Classes="searchInput">
@@ -81,17 +87,10 @@
                     </TextBox.Resources>
                 </TextBox>
 
-                <Border Grid.Column="6"
-                        Height="45"
-                        Padding="28,0"
-                        CornerRadius="22"
-                        Background="#4285F4">
-                    <TextBlock Text="Поиск"
-                               VerticalAlignment="Center"
-                               FontSize="22"
-                               FontWeight="Bold"
-                               Foreground="#FFFFFF"/>
-                </Border>
+                <Button Grid.Column="6" Classes="headerAction" Content="Поиск"/>
+
+                <Button Grid.Column="8" Classes="headerAction" Content="Скачать статьи"/>
+                <Button Grid.Column="10" Classes="headerAction" Content="Создать ссылку на статью"/>
             </Grid>
         </Border>
 
@@ -103,7 +102,7 @@
                           Margin="0,52,0,45"
                           HorizontalAlignment="Center">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="vm:ArticleListItemViewModel">
+                    <DataTemplate x:DataType="local:ArticleListItem">
                         <Button Classes="articleItem" Command="{Binding OpenCommand}" Margin="0,0,0,21">
                             <Border Padding="19,17,19,17"
                                     MinHeight="128"
