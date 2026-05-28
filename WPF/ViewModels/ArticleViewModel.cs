@@ -27,6 +27,22 @@ public class ArticleViewModel : ViewModelBase
         };
         PublishedAt = _article.PublishedAt.ToString("d MMMM yyyy", CultureInfo.GetCultureInfo("ru-RU"));
         Authors = _article.JoinAuthors();
+
+        if (_article is ResearchArticle research)
+        {
+            Methodology = research.Methodology;
+            Results = research.Results;
+        }
+        else if (_article is CaseStudy caseStudy)
+        {
+            CaseDescription = caseStudy.CaseDescription;
+            Conclusions = caseStudy.Conclusions;
+        }
+        else if (_article is ReviewArticle review)
+        {
+            ReviewPeriod = review.ReviewPeriod;
+            Sources = string.Join(", ", review.Sources);
+        }
         
         BackCommand = new RelayCommand(_goBack);
     }
@@ -36,6 +52,20 @@ public class ArticleViewModel : ViewModelBase
     public string Type { get; }
     public string PublishedAt { get; }
     public string Authors { get; }
+
+    public string? Methodology { get; }
+    public string? Results { get; }
+    public string? CaseDescription { get; }
+    public string? Conclusions { get; }
+    public string? Sources { get; }
+    public string? ReviewPeriod { get; }
+
+    public bool HasMethodology => !string.IsNullOrEmpty(Methodology);
+    public bool HasResults => !string.IsNullOrEmpty(Results);
+    public bool HasCaseDescription => !string.IsNullOrEmpty(CaseDescription);
+    public bool HasConclusions => !string.IsNullOrEmpty(Conclusions);
+    public bool HasSources => !string.IsNullOrEmpty(Sources);
+    public bool HasReviewPeriod => !string.IsNullOrEmpty(ReviewPeriod);
 
     public IRelayCommand BackCommand { get; }
 }

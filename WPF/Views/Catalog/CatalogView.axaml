@@ -59,7 +59,7 @@
                         Padding="17,0"
                         CornerRadius="22"
                         Background="#4285F4">
-                    <TextBlock Text="фильтры"
+                    <TextBlock Text="Фильтры"
                                VerticalAlignment="Center"
                                FontSize="22"
                                FontWeight="Bold"
@@ -86,7 +86,7 @@
                         Padding="28,0"
                         CornerRadius="22"
                         Background="#4285F4">
-                    <TextBlock Text="поиск"
+                    <TextBlock Text="Поиск"
                                VerticalAlignment="Center"
                                FontSize="22"
                                FontWeight="Bold"
