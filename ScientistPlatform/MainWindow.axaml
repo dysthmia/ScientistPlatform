@@ -16,7 +16,7 @@
         Title="Scientist Platform">
     <Grid>
         <views:WelcomeView IsVisible="{Binding IsWelcomeVisible}"/>
-        <views:CatalogView IsVisible="{Binding IsCatalogVisible}"/>
+        <views:CatalogView x:Name="CatalogPage" IsVisible="{Binding IsCatalogVisible}"/>
         <Panel IsVisible="{Binding IsArticleVisible}">
             <ContentControl Content="{Binding ArticlePage}"/>
         </Panel>

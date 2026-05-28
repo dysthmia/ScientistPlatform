@@ -1,8 +1,9 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:ScientistPlatform"
+             xmlns:views="using:ScientistPlatform.Views"
              x:Class="ScientistPlatform.Views.CatalogView"
-             x:DataType="local:MainWindow"
+             x:DataType="views:CatalogView"
              Background="#FFFFFF">
     <UserControl.Styles>
         <Style Selector="TextBox.searchInput">
