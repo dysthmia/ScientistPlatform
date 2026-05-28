@@ -45,7 +45,7 @@ public abstract partial class Article : ICitation
         return $"{authors}, \"{Title},\" {publisher.Name}, {PublishedAt:yyyy}, ISSN: {ISSN}.";
     }
 
-    private string JoinAuthors() =>
+    public string JoinAuthors() =>
         string.Join(", ", Authors.Select(a => a.Name));
 
     private string JoinAuthorsForApa()

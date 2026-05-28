@@ -14,5 +14,8 @@
     <Grid>
         <views:WelcomeView IsVisible="{Binding IsWelcomeVisible}"/>
         <views:CatalogView IsVisible="{Binding IsCatalogVisible}"/>
+        <Panel IsVisible="{Binding IsArticleVisible}">
+            <views:ArticleView DataContext="{Binding ArticlePage}"/>
+        </Panel>
     </Grid>
 </Window>
