@@ -95,38 +95,17 @@ public partial class ArticleView : UserControl
 
     private void DownloadJson()
     {
-        var downloadsPath = GetDownloadsPath();
-        var fileName = GetSafeFileName();
+        var downloadsPath = ExportHelper.GetDownloadsPath();
+        var fileName = ExportHelper.GetSafeFileName(Title);
         var manager = new JsonFileManager<Article>(fileName, downloadsPath);
         manager.Serialize(_article);
     }
 
     private void DownloadXml()
     {
-        var downloadsPath = GetDownloadsPath();
-        var fileName = GetSafeFileName();
+        var downloadsPath = ExportHelper.GetDownloadsPath();
+        var fileName = ExportHelper.GetSafeFileName(Title);
         var manager = new XmlFileManager<Article>(fileName, downloadsPath);
         manager.Serialize(_article);
-    }
-
-    private string GetDownloadsPath()
-    {
-        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-
-        var path = Path.Combine(userProfile, "Downloads");
-        if (Directory.Exists(path)) return path;
-
-        var localizedPath = Path.Combine(userProfile, "Загрузки");
-        if (Directory.Exists(localizedPath)) return localizedPath;
-
-        var desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        return Directory.Exists(desktop) ? desktop : userProfile;
-    }
-
-    private string GetSafeFileName()
-    {
-        var safeName = string.Join("_", Title.Split(Path.GetInvalidFileNameChars()));
-        if (safeName.Length > 100) safeName = safeName.Substring(0, 100);
-        return safeName;
     }
 }

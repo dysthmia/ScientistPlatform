@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
@@ -12,6 +14,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private bool _isCatalogVisible;
     private bool _isArticleVisible;
     private object? _articlePage;
+    private StorageFormat _selectedFormat = StorageConfig.CurrentFormat;
 
     public MainWindow()
     {
@@ -38,6 +41,32 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _articlePage = value;
             OnPropertyChanged();
         }
+    }
+
+    public List<StorageFormat> AvailableFormats => Enum.GetValues<StorageFormat>().ToList();
+
+    public StorageFormat SelectedFormat
+    {
+        get => _selectedFormat;
+        set
+        {
+            if (_selectedFormat != value)
+            {
+                var oldFormat = _selectedFormat;
+                _selectedFormat = value;
+                OnPropertyChanged();
+                MigrateData(value);
+            }
+        }
+    }
+
+    private void MigrateData(StorageFormat newFormat)
+    {
+        var repository = new ArticleRepository();
+        repository.MigrateToFormat(newFormat);
+        
+        // Re-initialize the catalog page to show data in the new format
+        CatalogPage.Initialize(OpenArticle);
     }
 
     private void OpenCatalog()

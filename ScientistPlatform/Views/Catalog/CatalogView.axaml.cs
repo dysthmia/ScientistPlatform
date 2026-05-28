@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using Model.Core;
+using Model.Data;
+using ScientistPlatform;
 
 namespace ScientistPlatform.Views;
 
@@ -19,16 +22,19 @@ public partial class CatalogView : UserControl, INotifyPropertyChanged
     public CatalogView()
     {
         InitializeComponent();
+        SubmitArticleCommand = new RelayCommand(SubmitArticle, () => SelectedPublisher != null && !string.IsNullOrWhiteSpace(SubmissionIssn));
+        DownloadAllJsonCommand = new RelayCommand(DownloadAllJson);
+        DownloadAllXmlCommand = new RelayCommand(DownloadAllXml);
     }
 
     public void Initialize(Action<Article> openArticleAction)
     {
-        Articles = new ArticleRepository().Articles
+        var repository = new ArticleRepository();
+        Articles = repository.Articles
             .Select(article => new ArticleListItem(article, openArticleAction))
             .ToList();
         
         Publishers = PublisherRepository.GetAll().ToList();
-        SubmitArticleCommand = new RelayCommand(SubmitArticle, () => SelectedPublisher != null && !string.IsNullOrWhiteSpace(SubmissionIssn));
         
         DataContext = this;
         OnPropertyChanged(nameof(Articles));
@@ -37,7 +43,9 @@ public partial class CatalogView : UserControl, INotifyPropertyChanged
 
     public List<ArticleListItem> Articles { get; private set; } = new();
     public List<Publisher> Publishers { get; private set; } = new();
-    public IRelayCommand SubmitArticleCommand { get; private set; } = null!;
+    public IRelayCommand SubmitArticleCommand { get; }
+    public IRelayCommand DownloadAllJsonCommand { get; }
+    public IRelayCommand DownloadAllXmlCommand { get; }
 
     public Publisher? SelectedPublisher
     {
@@ -110,6 +118,40 @@ public partial class CatalogView : UserControl, INotifyPropertyChanged
         OnPropertyChanged(nameof(SubmissionIssn));
         OnPropertyChanged(nameof(SelectedPublisher));
         SubmitArticleCommand.NotifyCanExecuteChanged();
+    }
+
+    private void DownloadAllJson()
+    {
+        var repository = new ArticleRepository();
+        var folderPath = ExportHelper.EnsureExportFolder("ArticlesJSON");
+
+        foreach (var item in Articles)
+        {
+            var article = repository.Articles.FirstOrDefault(a => a.Title == item.Title);
+            if (article != null)
+            {
+                var fileName = ExportHelper.GetSafeFileName(article.Title);
+                var manager = new JsonFileManager<Article>(fileName, folderPath);
+                manager.Serialize(article);
+            }
+        }
+    }
+
+    private void DownloadAllXml()
+    {
+        var repository = new ArticleRepository();
+        var folderPath = ExportHelper.EnsureExportFolder("ArticlesXML");
+
+        foreach (var item in Articles)
+        {
+            var article = repository.Articles.FirstOrDefault(a => a.Title == item.Title);
+            if (article != null)
+            {
+                var fileName = ExportHelper.GetSafeFileName(article.Title);
+                var manager = new XmlFileManager<Article>(fileName, folderPath);
+                manager.Serialize(article);
+            }
+        }
     }
 
     public new event PropertyChangedEventHandler? PropertyChanged;
