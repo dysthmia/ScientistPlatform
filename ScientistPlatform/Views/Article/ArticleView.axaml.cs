@@ -38,6 +38,7 @@ public partial class ArticleView : UserControl
         };
         PublishedAt = _article.PublishedAt.ToString("d MMMM yyyy", CultureInfo.GetCultureInfo("ru-RU"));
         Authors = _article.JoinAuthors();
+        ISSN = _article.ISSN;
 
         if (_article is ResearchArticle research)
         {
@@ -72,6 +73,7 @@ public partial class ArticleView : UserControl
     public string Type { get; }
     public string PublishedAt { get; }
     public string Authors { get; }
+    public string ISSN { get; }
 
     public string? Methodology { get; }
     public string? Results { get; }
