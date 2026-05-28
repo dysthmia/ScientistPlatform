@@ -18,6 +18,23 @@
         <Style Selector="TextBox.searchInput:focus">
             <Setter Property="BorderBrush" Value="#4285F4"/>
         </Style>
+        
+        <Style Selector="Button.articleItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <ContentPresenter Content="{TemplateBinding Content}"/>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button.articleItem:pointerover Border">
+            <Setter Property="Background" Value="#F8F9FA"/>
+        </Style>
     </UserControl.Styles>
     <Grid RowDefinitions="134,*">
         <Border BorderBrush="#DADCE0"
@@ -87,30 +104,31 @@
                           HorizontalAlignment="Center">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="vm:ArticleListItemViewModel">
-                        <Border Margin="0,0,0,21"
-                                Padding="19,17,19,17"
-                                MinHeight="128"
-                                BorderBrush="#4285F4"
-                                BorderThickness="3"
-                                CornerRadius="20"
-                                Background="#FFFFFF">
-                            <StackPanel Spacing="8">
-                                <TextBlock Text="{Binding Title}"
-                                           FontSize="20"
-                                           FontWeight="Bold"
-                                           Foreground="#111111"
-                                           TextWrapping="Wrap"/>
-                                <TextBlock Text="{Binding PublishedAt, StringFormat='Опубликовано: {0}'}"
-                                           FontSize="20"
-                                           FontWeight="SemiBold"
-                                           Foreground="#626262"/>
-                                <TextBlock Text="{Binding Authors, StringFormat='Авторы: {0}'}"
-                                           FontSize="20"
-                                           FontWeight="SemiBold"
-                                           Foreground="#626262"
-                                           TextWrapping="Wrap"/>
-                            </StackPanel>
-                        </Border>
+                        <Button Classes="articleItem" Command="{Binding OpenCommand}" Margin="0,0,0,21">
+                            <Border Padding="19,17,19,17"
+                                    MinHeight="128"
+                                    BorderBrush="#4285F4"
+                                    BorderThickness="3"
+                                    CornerRadius="20"
+                                    Background="#FFFFFF">
+                                <StackPanel Spacing="8">
+                                    <TextBlock Text="{Binding Title}"
+                                               FontSize="20"
+                                               FontWeight="Bold"
+                                               Foreground="#111111"
+                                               TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding PublishedAt, StringFormat='Опубликовано: {0}'}"
+                                               FontSize="20"
+                                               FontWeight="SemiBold"
+                                               Foreground="#626262"/>
+                                    <TextBlock Text="{Binding Authors, StringFormat='Авторы: {0}'}"
+                                               FontSize="20"
+                                               FontWeight="SemiBold"
+                                               Foreground="#626262"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
