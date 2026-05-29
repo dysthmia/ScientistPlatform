@@ -1,4 +1,4 @@
-﻿using System.Xml.Serialization;
+using System.Xml.Serialization;
 using Model.Core;
 using Model.Core.DTOs;
 using Model.Interfaces;
@@ -25,6 +25,18 @@ public class XmlFileManager<T> : FileManager<T>
         using (var sw = new StreamWriter(FullPath))
         {
             ser.Serialize(sw,dto_article);
+        }
+    }
+
+    public T Deserialize()
+    {
+        if (!File.Exists(FullPath)) return null!;
+
+        var ser = new XmlSerializer(typeof(DtoArticle));
+        using (var sr = new StreamReader(FullPath))
+        {
+            var dto = (DtoArticle)ser.Deserialize(sr)!;
+            return (T)dto.ToArticle();
         }
     }
 }

@@ -55,11 +55,23 @@ public class DtoArticle
             Sources = reviewArticle.Sources;
             ReviewPeriod = reviewArticle.ReviewPeriod;
         }
-        else if (article is CaseStudy caseStudy)
+        if (article is CaseStudy caseStudy)
         {
             CaseDescription = caseStudy.CaseDescription;
             Conclusions = caseStudy.Conclusions;
         }
+    }
+
+    public Article ToArticle()
+    {
+        Article article = Type switch
+        {   
+            ArticleType.Research => new ResearchArticle(Title, Text, Keywords, AuthorsNames.Select(n => new Author(n)).ToList(), PublishedAt, Methodology, Results, ISSN),
+            ArticleType.Review => new ReviewArticle(Title, Text, Keywords, PublishedAt, AuthorsNames.Select(n => new Author(n)).ToList(), Sources, ReviewPeriod, ISSN),
+            ArticleType.CaseStudy => new CaseStudy(Title, Text, Keywords, AuthorsNames.Select(n => new Author(n)).ToList(), PublishedAt, CaseDescription, Conclusions, ISSN),
+            _ => throw new ArgumentException("Invalid article type")
+        };
+        return article;
     }
 
     public bool ShouldSerializeMethodology() => !string.IsNullOrWhiteSpace(Methodology);

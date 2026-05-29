@@ -9,19 +9,37 @@ public static class PublisherRepository
         new Publisher(
             "Science Press",
             4.8,
-            new List<string> { "X", "Y", "study" },
+            new List<string> 
+            { 
+                "study", "urban ecology", "microclimate", "green infrastructure", 
+                "climate adaptation", "remote sensing", "drought", "soil moisture", 
+                "precision agriculture", "open science", "reproducibility", 
+                "materials science", "laboratory notebook", "biodiversity", 
+                "acoustics", "forest restoration", "machine learning" 
+            },
             PublisherCitationStyle.Apa),
 
         new Publisher(
             "Academic Review",
             4.5,
-            new List<string> { "Z", "review" },
+            new List<string> 
+            { 
+                "review", "digital twin", "smart city", "urban planning", 
+                "sustainability", "microplastics", "freshwater", "ecotoxicology", 
+                "water quality", "medical imaging", "artificial intelligence", 
+                "diagnostics", "clinical safety" 
+            },
             PublisherCitationStyle.Gost),
 
         new Publisher(
             "Case Reports Hub",
             4.2,
-            new List<string> { "case", "event" },
+            new List<string> 
+            { 
+                "case", "water management", "cyanobacteria", "public health", 
+                "restoration", "energy efficiency", "campus", "building retrofit", 
+                "air quality", "citizen science", "sensors", "urban health" 
+            },
             PublisherCitationStyle.Ieee)
     ];
 

@@ -3,15 +3,20 @@ using Model.Data;
 namespace Model.Core;
 public partial class ArticleRepository
 {
-    private const string Folder = "json";
-    private const string Extension = "json";
+    private string Folder => StorageConfig.CurrentFormat == StorageFormat.Json ? "json" : "xml";
+    private string Extension => StorageConfig.CurrentFormat == StorageFormat.Json ? "json" : "xml";
 
     public Article[] LoadAll()
     {
         Directory.CreateDirectory(Folder);
 
         if (!Directory.EnumerateFiles(Folder, $"*.{Extension}").Any())
-            SeedSamples();
+        {
+            if (StorageConfig.CurrentFormat == StorageFormat.Json)
+                SeedSamples();
+            else
+                return Array.Empty<Article>();
+        }
 
         var files = Directory.EnumerateFiles(Folder, $"*.{Extension}").ToList();
 
@@ -22,10 +27,19 @@ public partial class ArticleRepository
             try
             {
                 var fileName = Path.GetFileNameWithoutExtension(file);
-                var manager = new JsonFileManager<Article>(fileName, Extension);
-                manager.ChangeFolderPath(Folder);
+                Article article;
+                
+                if (StorageConfig.CurrentFormat == StorageFormat.Json)
+                {
+                    var manager = new JsonFileManager<Article>(fileName, Folder);
+                    article = manager.Deserialize();
+                }
+                else
+                {
+                    var manager = new XmlFileManager<Article>(fileName, Folder);
+                    article = manager.Deserialize();
+                }
 
-                var article = manager.Deserialize();
                 if (article != null)
                 {
                     if (article.Publisher != null)
@@ -50,15 +64,38 @@ public partial class ArticleRepository
     {
         try
         {
-            var manager = new JsonFileManager<Article>(fileName, Extension);
-            manager.ChangeFolderPath(Folder);
-            manager.Serialize(article);
+            if (StorageConfig.CurrentFormat == StorageFormat.Json)
+            {
+                var manager = new JsonFileManager<Article>(fileName, Folder);
+                manager.Serialize(article);
+            }
+            else
+            {
+                var manager = new XmlFileManager<Article>(fileName, Folder);
+                manager.Serialize(article);
+            }
             AddOrReplaceArticle(article);
         }
         catch (Exception ex)
         {
             throw new Exception($"Failed to save article: {ex.Message}", ex);
         }
+    }
+
+    public void MigrateToFormat(StorageFormat newFormat)
+    {
+        var oldFormat = StorageConfig.CurrentFormat;
+        if (oldFormat == newFormat) return;
+
+        var articlesToMigrate = Articles;
+        if (articlesToMigrate.Length == 0)
+            articlesToMigrate = LoadAll();
+
+        StorageConfig.CurrentFormat = newFormat;
+        Directory.CreateDirectory(Folder);
+        
+        foreach (var article in articlesToMigrate)
+            SaveArticle(article, article.ISSN.Replace(" ", "_").Replace("-", "_"));
     }
 
     private void SeedSamples()

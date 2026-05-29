@@ -1,4 +1,4 @@
-﻿using Model.Core;
+using Model.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -15,8 +15,8 @@ public class JsonFileManager<T> : FileManager<T>
     };
 
     public JsonFileManager (string file_name, 
-                            string file_extension) 
-                            : base(file_name, file_extension, "json")
+                            string folder_path) 
+                            : base(file_name, "json", folder_path)
     {
     }
 

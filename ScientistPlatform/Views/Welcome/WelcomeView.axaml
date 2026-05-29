@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:WPF.ViewModels"
-             x:Class="WPF.Views.WelcomeView"
-             x:DataType="vm:MainWindowViewModel"
+             xmlns:local="using:ScientistPlatform"
+             x:Class="ScientistPlatform.Views.WelcomeView"
+             x:DataType="local:MainWindow"
              Background="#FFFFFF">
     <UserControl.Styles>
         <Style Selector="Button.start">
