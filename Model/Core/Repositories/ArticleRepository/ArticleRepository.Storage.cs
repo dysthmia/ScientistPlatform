@@ -3,9 +3,8 @@ using Model.Data;
 namespace Model.Core;
 public partial class ArticleRepository
 {
-    private string Folder => StorageConfig.CurrentFormat == StorageFormat.Json ? "json" : "xml";
-    private string Extension => StorageConfig.CurrentFormat == StorageFormat.Json ? "json" : "xml";
-
+    private const string Folder = "ArticlesData";
+    private string Extension => GetExtension(StorageConfig.CurrentFormat);
     public Article[] LoadAll()
     {
         Directory.CreateDirectory(Folder);
@@ -91,11 +90,29 @@ public partial class ArticleRepository
         if (articlesToMigrate.Length == 0)
             articlesToMigrate = LoadAll();
 
-        StorageConfig.CurrentFormat = newFormat;
         Directory.CreateDirectory(Folder);
+
+        var oldExtension = GetExtension(oldFormat);
+        var newExtension = GetExtension(newFormat);
+        DeleteStoredFiles(newExtension);
+
+        StorageConfig.CurrentFormat = newFormat;
         
         foreach (var article in articlesToMigrate)
             SaveArticle(article, article.ISSN.Replace(" ", "_"));
+
+        DeleteStoredFiles(oldExtension);
+    }
+
+    private static string GetExtension(StorageFormat format) =>
+        format == StorageFormat.Json ? "json" : "xml";
+
+    private static void DeleteStoredFiles(string extension)
+    {
+        if (!Directory.Exists(Folder)) return;
+
+        foreach (var file in Directory.EnumerateFiles(Folder, $"*.{extension}"))
+            File.Delete(file);
     }
 
     private void SeedSamples()
@@ -264,15 +281,10 @@ public partial class ArticleRepository
             )
         };
 
-        var publishers = PublisherRepository.GetAll();
-
         foreach (var (article, fileName) in samples)
         {
             try
             {
-                foreach (var publisher in publishers)
-                    article.AddPublisher(publisher);
-
                 SaveArticle(article, fileName);
             }
             catch (Exception ex)
