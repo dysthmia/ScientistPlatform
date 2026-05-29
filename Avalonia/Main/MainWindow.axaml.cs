@@ -39,6 +39,7 @@ public partial class MainWindow : Window
         CatalogPage.IsVisible = false;
         ArticlePanel.IsVisible = false;
         ArticleHost.Content = null;
+        SettingsButton.IsVisible = false;
     }
 
     private void OpenCatalog()
@@ -49,6 +50,7 @@ public partial class MainWindow : Window
         CatalogPage.IsVisible = true;
         ArticlePanel.IsVisible = false;
         ArticleHost.Content = null;
+        SettingsButton.IsVisible = true;
     }
 
     private void OpenArticle(Article article)
@@ -58,5 +60,6 @@ public partial class MainWindow : Window
         WelcomePage.IsVisible = false;
         CatalogPage.IsVisible = false;
         ArticlePanel.IsVisible = true;
+        SettingsButton.IsVisible = false;
     }
 }

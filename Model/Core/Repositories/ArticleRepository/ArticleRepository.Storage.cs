@@ -11,7 +11,7 @@ public partial class ArticleRepository
 
         if (!Directory.EnumerateFiles(Folder, $"*.{Extension}").Any())
         {
-            if (StorageConfig.CurrentFormat == StorageFormat.Json)
+            if (StorageConfig.CurrentFormat == StorageFormat.JSON)
                 SeedSamples();
             else
                 return Array.Empty<Article>();
@@ -28,7 +28,7 @@ public partial class ArticleRepository
                 var fileName = Path.GetFileNameWithoutExtension(file);
                 Article article;
                 
-                if (StorageConfig.CurrentFormat == StorageFormat.Json)
+                if (StorageConfig.CurrentFormat == StorageFormat.JSON)
                 {
                     var manager = new JsonFileManager<Article>(fileName, Folder);
                     article = manager.Deserialize();
@@ -63,7 +63,7 @@ public partial class ArticleRepository
     {
         try
         {
-            if (StorageConfig.CurrentFormat == StorageFormat.Json)
+            if (StorageConfig.CurrentFormat == StorageFormat.JSON)
             {
                 var manager = new JsonFileManager<Article>(fileName, Folder);
                 manager.Serialize(article);
@@ -105,7 +105,7 @@ public partial class ArticleRepository
     }
 
     private static string GetExtension(StorageFormat format) =>
-        format == StorageFormat.Json ? "json" : "xml";
+        format == StorageFormat.JSON ? "json" : "xml";
 
     private static void DeleteStoredFiles(string extension)
     {

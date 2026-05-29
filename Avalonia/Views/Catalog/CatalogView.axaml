@@ -158,7 +158,7 @@
     <Grid RowDefinitions="134,*">
         <Border BorderBrush="#DADCE0"
                 BorderThickness="0,0,0,1">
-            <Grid Margin="38,0,39,0"
+            <Grid Margin="38,0,110,0"
                   ColumnDefinitions="Auto,48,Auto,14,*,14,Auto"
                   VerticalAlignment="Center">
                 <StackPanel Grid.Column="0"

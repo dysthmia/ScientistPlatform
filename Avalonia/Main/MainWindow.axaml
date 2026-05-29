@@ -12,28 +12,95 @@
         Background="#FFFFFF"
         FontFamily="Inter"
         Title="Scientist Platform">
-    <DockPanel>
-        <Menu DockPanel.Dock="Top" Background="#F8F9FA">
-            <MenuItem Header="Настройки">
-                <MenuItem>
-                    <MenuItem.Header>
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="Формат хранения данных" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="StorageFormatComboBox"
-                                      Width="100"
-                                      SelectionChanged="StorageFormatComboBox_SelectionChanged"/>
-                        </StackPanel>
-                    </MenuItem.Header>
-                </MenuItem>
-            </MenuItem>
-        </Menu>
+    <Window.Styles>
+        <Style Selector="Button.settings">
+            <Setter Property="Width" Value="54"/>
+            <Setter Property="Height" Value="54"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Background" Value="#4285F4"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="27"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Margin" Value="0,40,40,0"/>
+            <Setter Property="ZIndex" Value="100"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+                </Transitions>
+            </Setter>
+            <Setter Property="RenderTransform" Value="none"/>
+        </Style>
+        <Style Selector="Button.settings:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3367D6"/>
+        </Style>
+        <Style Selector="Button.settings:pointerover">
+            <Setter Property="RenderTransform" Value="scale(1.1)"/>
+        </Style>
+        <Style Selector="Button.settings PathIcon.settings">
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Data" Value="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41l-0.36,2.54c-0.59,0.24-1.13,0.57-1.62,0.94L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.85,9.48l2.03,1.58C4.84,11.36,4.81,11.69,4.81,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+        </Style>
 
-        <Grid>
-            <views:WelcomeView x:Name="WelcomePage"/>
-            <views:CatalogView x:Name="CatalogPage"/>
-            <Panel x:Name="ArticlePanel">
-                <ContentControl x:Name="ArticleHost"/>
-            </Panel>
-        </Grid>
-    </DockPanel>
+        <Style Selector="FlyoutPresenter.settingsFlyout">
+            <Setter Property="Padding" Value="25"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="#4285F4"/>
+            <Setter Property="CornerRadius" Value="15"/>
+            <Setter Property="Background" Value="#FFFFFF"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid>
+        <DockPanel>
+            <Grid DockPanel.Dock="Top" Height="0"/> <!-- Placeholder to keep DockPanel happy if needed -->
+
+            <Grid>
+                <views:WelcomeView x:Name="WelcomePage"/>
+                <views:CatalogView x:Name="CatalogPage"/>
+                <Panel x:Name="ArticlePanel">
+                    <ContentControl x:Name="ArticleHost"/>
+                </Panel>
+            </Grid>
+        </DockPanel>
+
+        <Button x:Name="SettingsButton" Classes="settings">
+            <Button.Flyout>
+                <Flyout Placement="BottomEdgeAlignedRight" FlyoutPresenterClasses="settingsFlyout">
+                    <StackPanel Spacing="20" Width="300">
+                        <TextBlock Text="Настройки"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   Foreground="#202124"/>
+                        
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Формат хранения данных"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="#5F6368"/>
+                            <ComboBox x:Name="StorageFormatComboBox"
+                                      HorizontalAlignment="Stretch"
+                                      SelectionChanged="StorageFormatComboBox_SelectionChanged">
+                                <ComboBox.Styles>
+                                    <Style Selector="ComboBox">
+                                        <Setter Property="Height" Value="42"/>
+                                        <Setter Property="CornerRadius" Value="10"/>
+                                    </Style>
+                                </ComboBox.Styles>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <TextBlock Text="Эти настройки изменят способ сохранения и загрузки данных во всем приложении."
+                                   FontSize="12"
+                                   Foreground="#70757A"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Flyout>
+            </Button.Flyout>
+            <PathIcon Classes="settings"/>
+        </Button>
+    </Grid>
 </Window>
