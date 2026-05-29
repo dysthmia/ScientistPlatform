@@ -1,8 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="using:ScientistPlatform"
              x:Class="ScientistPlatform.Views.WelcomeView"
-             x:DataType="local:MainWindow"
              Background="#FFFFFF">
     <UserControl.Styles>
         <Style Selector="Button.start">
@@ -52,9 +50,7 @@
         </StackPanel>
         <Button Classes="start"
                 HorizontalAlignment="Center"
-                Command="{Binding StartSearchCommand}">
-            <TextBlock Text="Начать поиск"
-                       Foreground="{Binding $parent[Button].Foreground}"/>
-        </Button>
+                Content="Начать поиск"
+                Click="StartButton_Click"/>
     </StackPanel>
 </UserControl>

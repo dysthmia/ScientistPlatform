@@ -3,9 +3,8 @@ using Model.Data;
 namespace Model.Core;
 public partial class ArticleRepository
 {
-    private string Folder => StorageConfig.CurrentFormat == StorageFormat.Json ? "json" : "xml";
-    private string Extension => StorageConfig.CurrentFormat == StorageFormat.Json ? "json" : "xml";
-
+    private const string Folder = "ArticlesData";
+    private string Extension => GetExtension(StorageConfig.CurrentFormat);
     public Article[] LoadAll()
     {
         Directory.CreateDirectory(Folder);
@@ -91,11 +90,29 @@ public partial class ArticleRepository
         if (articlesToMigrate.Length == 0)
             articlesToMigrate = LoadAll();
 
-        StorageConfig.CurrentFormat = newFormat;
         Directory.CreateDirectory(Folder);
+
+        var oldExtension = GetExtension(oldFormat);
+        var newExtension = GetExtension(newFormat);
+        DeleteStoredFiles(newExtension);
+
+        StorageConfig.CurrentFormat = newFormat;
         
         foreach (var article in articlesToMigrate)
-            SaveArticle(article, article.ISSN.Replace(" ", "_").Replace("-", "_"));
+            SaveArticle(article, article.ISSN.Replace(" ", "_"));
+
+        DeleteStoredFiles(oldExtension);
+    }
+
+    private static string GetExtension(StorageFormat format) =>
+        format == StorageFormat.Json ? "json" : "xml";
+
+    private static void DeleteStoredFiles(string extension)
+    {
+        if (!Directory.Exists(Folder)) return;
+
+        foreach (var file in Directory.EnumerateFiles(Folder, $"*.{extension}"))
+            File.Delete(file);
     }
 
     private void SeedSamples()
@@ -116,7 +133,7 @@ public partial class ArticleRepository
                     methodology: "В течение июня-августа 2024 года в 24 кварталах фиксировались показания температурных и влажностных датчиков каждые 15 минут. Двенадцать кварталов содержали общественные сады площадью от 450 до 1200 м2, остальные образовали контрольную группу. Различия оценивались смешанной регрессионной моделью с учетом осадков, облачности и плотности трафика.",
                     results: "В часы максимальной жары температура воздуха рядом с садами была в среднем на 1,7 градуса ниже, а температура покрытий - на 6,2 градуса ниже контрольных значений. Доля жителей, оценивших пространство как комфортное для прогулок, выросла с 38 до 71 процента. Наибольший эффект дали участки с древесным пологом более 35 процентов площади.",
                     issn: "2413-8820"),
-                "research_urban_gardens"
+                "2413-8820"
             ),
             (
                 new ResearchArticle(
@@ -132,7 +149,7 @@ public partial class ArticleRepository
                     methodology: "Набор данных включает 186 полей пшеницы и подсолнечника за три сезона. Индексы NDVI и NDMI из снимков Sentinel-2 объединялись с ежедневными данными 312 почвенных датчиков и погодными рядами. Классификатор градиентного бустинга обучался на двух сезонах и проверялся на третьем без перенастройки порога тревоги.",
                     results: "Система выявляла стресс растений за 9-12 дней до визуального проявления признаков засухи, достигнув F1-меры 0,87. При моделировании ограниченного полива рекомендации уменьшили расход воды на 18 процентов без статистически значимого падения урожайности. Ошибки преимущественно возникали после локальных ливней, не отраженных в сетке метеонаблюдений.",
                     issn: "2786-1459"),
-                "research_drought_detection"
+                "2786-1459"
             ),
             (
                 new ResearchArticle(
@@ -148,7 +165,7 @@ public partial class ArticleRepository
                     methodology: "Шесть лабораторий независимо воспроизводили синтез тонкопленочного материала по 40 экспериментальным сериям. Половина серий сопровождалась стандартной публикацией и приложением, половина - структурированным журналом с версиями протокола, параметрами оборудования и журналом отклонений. Оценивались успешность воспроизведения, время подготовки и число запросов к исходной группе.",
                     results: "При наличии открытого журнала успешность первого воспроизведения выросла с 52 до 81 процента, а медианное время поиска причин расхождений сократилось с 11 до 4 часов. Дополнительное ведение журнала требовало примерно 14 минут на экспериментальную серию. Наиболее полезными оказались сведения о калибровке и фотографии промежуточных образцов.",
                     issn: "2310-4776"),
-                "research_open_notebooks"
+                "2310-4776"
             ),
             (
                 new ResearchArticle(
@@ -164,7 +181,7 @@ public partial class ArticleRepository
                     methodology: "На 30 участках лесов разного возраста установлены автономные регистраторы, записывавшие по 10 минут каждого часа на протяжении весеннего сезона. Модель распознавала голоса 42 индикаторных видов; 15 процентов фрагментов независимо разметили два орнитолога. Метрики сравнивались с результатами традиционных маршрутных учетов.",
                     results: "Метод обнаружил 39 из 42 индикаторных видов и показал корреляцию 0,91 с маршрутным учетом по видовому богатству. В лесах старше 12 лет индекс акустического разнообразия оказался на 34 процента выше, чем на трехлетних участках. Комбинация автоматической разметки и экспертного контроля снизила трудозатраты полевого мониторинга примерно в четыре раза.",
                     issn: "2709-5412"),
-                "research_forest_acoustics"
+                "2709-5412"
             ),
             (
                 new ReviewArticle(
@@ -180,7 +197,7 @@ public partial class ArticleRepository
                     sources: new[] { "Batty M. Digital twins and urban analytics. 2018.", "Dembski F. et al. Urban digital twins for planning. 2020.", "ITU. Digital twin cities: framework and indicators. 2023.", "UN-Habitat. People-centered smart cities. 2024." },
                     reviewPeriod: "2018-2025",
                     issn: "2618-3347"),
-                "review_digital_twins"
+                "2618-3347"
             ),
             (
                 new ReviewArticle(
@@ -196,7 +213,7 @@ public partial class ArticleRepository
                     sources: new[] { "WHO. Microplastics in drinking-water. 2019.", "Blettler M. et al. Freshwater plastic pollution. 2018.", "Koelmans A. et al. Microplastics risk assessment. 2022.", "European Environment Agency. Plastics in Europe's environment. 2024." },
                     reviewPeriod: "2015-2025",
                     issn: "2542-1783"),
-                "review_microplastics"
+                "2542-1783"
             ),
             (
                 new ReviewArticle(
@@ -212,7 +229,7 @@ public partial class ArticleRepository
                     sources: new[] { "Liu X. et al. Reporting guidelines for clinical AI. 2020.", "WHO. Ethics and governance of AI for health. 2021.", "DECIDE-AI Expert Group. Early clinical evaluation guidance. 2022.", "Radiological Society review of AI deployment. 2024." },
                     reviewPeriod: "2017-2025",
                     issn: "2658-9071"),
-                "review_medical_ai"
+                "2658-9071"
             ),
             (
                 new CaseStudy(
@@ -228,7 +245,7 @@ public partial class ArticleRepository
                     caseDescription: "В августе 2023 года концентрация микроцистина в водозаборной зоне превысила рекомендуемое значение в 2,4 раза после периода жары и ливневого смыва с сельскохозяйственных земель. Муниципальная служба, лаборатория университета и фермерские хозяйства совместно реализовали экстренный план контроля и программу снижения фосфорной нагрузки.",
                     conclusions: "Через 18 дней показатели воды вернулись к нормативным значениям, а в следующий теплый сезон опасного превышения не зафиксировано. Наиболее значимыми мерами стали ранний лабораторный сигнал, гибкий выбор горизонта водозабора и снижение стока питательных веществ в притоки.",
                     issn: "2410-6205"),
-                "case_reservoir_water"
+                "2410-6205"
             ),
             (
                 new CaseStudy(
@@ -244,7 +261,7 @@ public partial class ArticleRepository
                     caseDescription: "Площадь корпуса составляла 14 800 м2, исходное годовое потребление тепла - 238 кВт-ч на м2. Ограничениями служили непрерывное расписание занятий, охраняемый фасад и фиксированный двухлетний бюджет. Для проверки результатов использовалась погодная нормализация энергопотребления.",
                     conclusions: "После завершения двух этапов потребление тепла снизилось на 31 процент, электроэнергии - на 22 процента, а количество жалоб на микроклимат уменьшилось более чем вдвое. Поэтапный подход показал, что модернизация действующего здания возможна без длительного закрытия при наличии мониторинга и понятной коммуникации.",
                     issn: "2686-7521"),
-                "case_campus_retrofit"
+                "2686-7521"
             ),
             (
                 new CaseStudy(
@@ -260,19 +277,14 @@ public partial class ArticleRepository
                     caseDescription: "Двадцать восемь датчиков PM2.5 были размещены у школ, дворов и остановок на шесть месяцев. Данные сопоставлялись с погодой и интенсивностью движения, а три устройства ежемесячно возвращались к референсной станции для повторной калибровки. Проект финансировался грантом местного сообщества.",
                     conclusions: "Сеть выявила устойчивые пики загрязнения в утренние часы у двух школ и во время вечерних заторов. Город изменил схему высадки пассажиров и ввел пилотную зеленую защитную полосу; повторные измерения показали снижение пиковых значений PM2.5 на 16 процентов. Для дальнейшего использования необходимы регулярная калибровка и публичное описание ограничений датчиков.",
                     issn: "2734-3968"),
-                "case_air_sensors"
+                "2734-3968"
             )
         };
-
-        var publishers = PublisherRepository.GetAll();
 
         foreach (var (article, fileName) in samples)
         {
             try
             {
-                foreach (var publisher in publishers)
-                    article.AddPublisher(publisher);
-
                 SaveArticle(article, fileName);
             }
             catch (Exception ex)

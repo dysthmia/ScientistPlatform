@@ -2,7 +2,7 @@ namespace Model.Core;
 
 public abstract partial class Article
 {
-    public Publisher Publisher { get; private set; }
+    public Publisher? Publisher { get; private set; }
     public void AddPublisher(Publisher publisher)
     {
         if (publisher == null) return;
@@ -16,5 +16,5 @@ public abstract partial class Article
         Publisher = publisher;
         FormatCitation(publisher);
     }
-    public void RemovePublisher() => Publisher = null!;
+    public void RemovePublisher() => Publisher = null;
 }
