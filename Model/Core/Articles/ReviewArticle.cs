@@ -27,10 +27,14 @@ public class ReviewArticle : Article
                          List<Author> authors,
                          string[] sources = null!,
                          string reviewPeriod = "",
-                         string issn = "")
+                         string issn = "",
+                         Publisher? publisher = null)
         : base(title, text, keywords, publishedAt, ArticleType.Review, authors, issn)
     {
         Sources = sources ?? Array.Empty<string>();
         ReviewPeriod = reviewPeriod;
+
+        if (publisher != null)
+            AddPublisher(publisher);
     }
 }

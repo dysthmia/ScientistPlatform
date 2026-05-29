@@ -27,10 +27,14 @@ public class ResearchArticle : Article
                            DateTime publishedAt,
                            string methodology = "",
                            string results = "",
-                           string issn = "")
+                           string issn = "",
+                           Publisher? publisher = null)
         : base(title, text, keywords, publishedAt, ArticleType.Research, authors, issn)
     {
         Methodology = methodology;
         Results = results;
+
+        if (publisher != null)
+            AddPublisher(publisher);
     }
 }

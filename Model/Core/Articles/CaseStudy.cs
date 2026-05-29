@@ -27,10 +27,14 @@ public class CaseStudy : Article
                      DateTime publishedAt,
                      string caseDescription = "",
                      string conclusions = "",
-                     string issn = "")
+                     string issn = "",
+                     Publisher? publisher = null)
         : base(title, text, keywords, publishedAt, ArticleType.CaseStudy, authors, issn)
     {
         CaseDescription = caseDescription;
         Conclusions = conclusions;
+
+        if (publisher != null)
+            AddPublisher(publisher);
     }
 }

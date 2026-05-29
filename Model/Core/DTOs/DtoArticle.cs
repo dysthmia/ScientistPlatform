@@ -23,6 +23,12 @@ public class DtoArticle
     public string CaseDescription { get; set; }
     public string Conclusions { get; set; }
 
+    // Publisher
+    public string PublisherName { get; set; } = "";
+    public double PublisherRating { get; set; }
+    public PublisherCitationStyle PublisherCitationStyle { get; set; }
+    public string[] PublisherThemes { get; set; } = Array.Empty<string>();
+
     public DtoArticle()
     {
     }
@@ -45,6 +51,11 @@ public class DtoArticle
         CaseDescription = "";
         Conclusions = "";
 
+        PublisherName = "";
+        PublisherRating = 0;
+        PublisherCitationStyle = PublisherCitationStyle.Apa;
+        PublisherThemes = Array.Empty<string>();
+
         if (article is ResearchArticle researchArticle)
         {
             Methodology = researchArticle.Methodology;
@@ -60,6 +71,14 @@ public class DtoArticle
             CaseDescription = caseStudy.CaseDescription;
             Conclusions = caseStudy.Conclusions;
         }
+
+        if (article.Publisher != null)
+        {
+            PublisherName = article.Publisher.Name;
+            PublisherRating = article.Publisher.Rating;
+            PublisherCitationStyle = article.Publisher.CitationStyle;
+            PublisherThemes = article.Publisher.Themes;
+        }
     }
 
     public Article ToArticle()
@@ -71,6 +90,18 @@ public class DtoArticle
             ArticleType.CaseStudy => new CaseStudy(Title, Text, Keywords, AuthorsNames.Select(n => new Author(n)).ToList(), PublishedAt, CaseDescription, Conclusions, ISSN),
             _ => throw new ArgumentException("Invalid article type")
         };
+
+        if (!string.IsNullOrWhiteSpace(PublisherName))
+        {
+            var publisher = new Publisher(
+                PublisherName,
+                PublisherRating,
+                PublisherThemes?.ToList() ?? new List<string>(),
+                PublisherCitationStyle);
+
+            article.AddPublisher(publisher);
+        }
+
         return article;
     }
 
@@ -82,4 +113,9 @@ public class DtoArticle
     
     public bool ShouldSerializeCaseDescription() => !string.IsNullOrWhiteSpace(CaseDescription);
     public bool ShouldSerializeConclusions() => !string.IsNullOrWhiteSpace(Conclusions);
+
+    public bool ShouldSerializePublisherName() => !string.IsNullOrWhiteSpace(PublisherName);
+    public bool ShouldSerializePublisherRating() => !string.IsNullOrWhiteSpace(PublisherName);
+    public bool ShouldSerializePublisherCitationStyle() => !string.IsNullOrWhiteSpace(PublisherName);
+    public bool ShouldSerializePublisherThemes() => PublisherThemes != null && PublisherThemes.Length > 0;
 }
