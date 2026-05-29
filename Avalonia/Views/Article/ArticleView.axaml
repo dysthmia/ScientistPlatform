@@ -1,8 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="using:ScientistPlatform.Views"
              x:Class="ScientistPlatform.Views.ArticleView"
-             x:DataType="local:ArticleView"
              Background="#FFFFFF">
     <UserControl.Styles>
         <Style Selector="Button.nav">
@@ -45,7 +43,9 @@
     <Grid RowDefinitions="134,*">
 
         <Border BorderBrush="#DADCE0" BorderThickness="0,0,0,1">
-            <Grid Margin="38,0,39,0" ColumnDefinitions="Auto,48,Auto,*,Auto,14,Auto,14,Auto" VerticalAlignment="Center">
+            <Grid Margin="38,0,39,0"
+                  ColumnDefinitions="Auto,48,Auto,*,Auto"
+                  VerticalAlignment="Center">
 
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="Sci" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
@@ -57,54 +57,77 @@
                     <TextBlock Text="orm" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
                 </StackPanel>
 
-                <Button Grid.Column="2" Classes="nav" Content="Назад" Command="{Binding BackCommand}"/>
+                <Button Grid.Column="2"
+                        Classes="nav"
+                        Content="Назад"
+                        Click="BackButton_Click"/>
 
-                <Button Grid.Column="6" Classes="export" Content="Скачать в JSON" Command="{Binding DownloadJsonCommand}"/>
-                <Button Grid.Column="8" Classes="export" Content="Скачать в XML" Command="{Binding DownloadXmlCommand}"/>
+                <StackPanel Grid.Column="4"
+                            Orientation="Horizontal"
+                            Spacing="14">
+                    <Button Classes="export"
+                            Content="Скачать в JSON"
+                            Click="DownloadJsonButton_Click"/>
+                    <Button Classes="export"
+                            Content="Скачать в XML"
+                            Click="DownloadXmlButton_Click"/>
+                    <Button Classes="export"
+                            Content="Скачать в TXT"
+                            Click="DownloadTxtButton_Click"/>
+                </StackPanel>
             </Grid>
         </Border>
 
         <ScrollViewer Grid.Row="1">
             <StackPanel Margin="60,40" Spacing="20" MaxWidth="1000" HorizontalAlignment="Left">
-                <SelectableTextBlock Text="{Binding Title}" FontSize="32" FontWeight="Bold" TextWrapping="Wrap" Foreground="#000000"/>
+                <SelectableTextBlock x:Name="TitleText"
+                                     FontSize="32"
+                                     FontWeight="Bold"
+                                     TextWrapping="Wrap"
+                                     Foreground="#000000"/>
                 
                 <StackPanel Spacing="5">
-                    <SelectableTextBlock Text="{Binding ISSN, StringFormat='ISSN: {0}'}" FontSize="20" Foreground="#A0A0A0"/>
-                    <SelectableTextBlock Text="{Binding Type}" FontSize="20" Foreground="#A0A0A0"/>
-                    <SelectableTextBlock Text="{Binding PublishedAt, StringFormat='Опубликовано: {0}'}" FontSize="20" Foreground="#A0A0A0"/>
-                    <SelectableTextBlock Text="{Binding Authors, StringFormat='Авторы: {0}'}" FontSize="20" Foreground="#A0A0A0" TextWrapping="Wrap"/>
+                    <SelectableTextBlock x:Name="IssnText" FontSize="20" Foreground="#A0A0A0"/>
+                    <SelectableTextBlock x:Name="TypeText" FontSize="20" Foreground="#A0A0A0"/>
+                    <SelectableTextBlock x:Name="PublishedAtText" FontSize="20" Foreground="#A0A0A0"/>
+                    <SelectableTextBlock x:Name="AuthorsText" FontSize="20" Foreground="#A0A0A0" TextWrapping="Wrap"/>
                 </StackPanel>
 
-                <SelectableTextBlock Text="{Binding Text}" FontSize="22" LineHeight="32" TextWrapping="Wrap" Margin="0,20,0,0" Foreground="#000000"/>
+                <SelectableTextBlock x:Name="ArticleText"
+                                     FontSize="22"
+                                     LineHeight="32"
+                                     TextWrapping="Wrap"
+                                     Margin="0,20,0,0"
+                                     Foreground="#000000"/>
 
-                <StackPanel IsVisible="{Binding HasMethodology}" Spacing="5" Margin="0,20,0,0">
+                <StackPanel x:Name="MethodologyPanel" Spacing="5" Margin="0,20,0,0">
                     <SelectableTextBlock Text="Методология" FontSize="24" FontWeight="Bold" Foreground="#A0A0A0"/>
-                    <SelectableTextBlock Text="{Binding Methodology}" FontSize="22" TextWrapping="Wrap" Foreground="#000000"/>
+                    <SelectableTextBlock x:Name="MethodologyText" FontSize="22" TextWrapping="Wrap" Foreground="#000000"/>
                 </StackPanel>
 
-                <StackPanel IsVisible="{Binding HasResults}" Spacing="5" Margin="0,10,0,0">
+                <StackPanel x:Name="ResultsPanel" Spacing="5" Margin="0,10,0,0">
                     <SelectableTextBlock Text="Результаты" FontSize="24" FontWeight="Bold" Foreground="#A0A0A0"/>
-                    <SelectableTextBlock Text="{Binding Results}" FontSize="22" TextWrapping="Wrap" Foreground="#000000"/>
+                    <SelectableTextBlock x:Name="ResultsText" FontSize="22" TextWrapping="Wrap" Foreground="#000000"/>
                 </StackPanel>
 
-                <StackPanel IsVisible="{Binding HasCaseDescription}" Spacing="5" Margin="0,20,0,0">
+                <StackPanel x:Name="CaseDescriptionPanel" Spacing="5" Margin="0,20,0,0">
                     <SelectableTextBlock Text="Описание случая" FontSize="24" FontWeight="Bold" Foreground="#A0A0A0"/>
-                    <SelectableTextBlock Text="{Binding CaseDescription}" FontSize="22" TextWrapping="Wrap" Foreground="#000000"/>
+                    <SelectableTextBlock x:Name="CaseDescriptionText" FontSize="22" TextWrapping="Wrap" Foreground="#000000"/>
                 </StackPanel>
 
-                <StackPanel IsVisible="{Binding HasConclusions}" Spacing="5" Margin="0,10,0,0">
+                <StackPanel x:Name="ConclusionsPanel" Spacing="5" Margin="0,10,0,0">
                     <SelectableTextBlock Text="Заключение" FontSize="24" FontWeight="Bold" Foreground="#A0A0A0"/>
-                    <SelectableTextBlock Text="{Binding Conclusions}" FontSize="22" TextWrapping="Wrap" Foreground="#000000"/>
+                    <SelectableTextBlock x:Name="ConclusionsText" FontSize="22" TextWrapping="Wrap" Foreground="#000000"/>
                 </StackPanel>
 
-                <StackPanel IsVisible="{Binding HasReviewPeriod}" Spacing="5" Margin="0,20,0,0">
+                <StackPanel x:Name="ReviewPeriodPanel" Spacing="5" Margin="0,20,0,0">
                     <SelectableTextBlock Text="Период обзора" FontSize="24" FontWeight="Bold" Foreground="#A0A0A0"/>
-                    <SelectableTextBlock Text="{Binding ReviewPeriod}" FontSize="22" TextWrapping="Wrap" Foreground="#000000"/>
+                    <SelectableTextBlock x:Name="ReviewPeriodText" FontSize="22" TextWrapping="Wrap" Foreground="#000000"/>
                 </StackPanel>
 
-                <StackPanel IsVisible="{Binding HasSources}" Spacing="5" Margin="0,10,0,0">
+                <StackPanel x:Name="SourcesPanel" Spacing="5" Margin="0,10,0,0">
                     <SelectableTextBlock Text="Источники" FontSize="24" FontWeight="Bold" Foreground="#A0A0A0"/>
-                    <SelectableTextBlock Text="{Binding Sources}" FontSize="22" TextWrapping="Wrap" Foreground="#000000"/>
+                    <SelectableTextBlock x:Name="SourcesText" FontSize="22" TextWrapping="Wrap" Foreground="#000000"/>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

@@ -1,163 +1,178 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
+using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.Input;
+using Avalonia.Interactivity;
+using Avalonia.Media;
 using Model.Core;
 using Model.Data;
-using ScientistPlatform;
 
 namespace ScientistPlatform.Views;
 
-public partial class CatalogView : UserControl, INotifyPropertyChanged
+public partial class CatalogView : UserControl
 {
-    private Publisher? _selectedPublisher;
-    private string _submissionIssn = string.Empty;
-    private string _submissionMessage = "Ваша статья будет отправлена на проверку в выбранное издательство.";
-    private bool _isSuccessMessage = false;
+    private const string DefaultSubmissionMessage =
+        "Ваша статья будет отправлена на проверку в выбранное издательство.";
 
+    private readonly List<ArticleListItem> _articles = new();
+    private Action<Article>? _openArticle;
+    private bool _isUpdatingSubmissionForm;
+    private bool _submissionSucceeded;
     public CatalogView()
     {
         InitializeComponent();
-        SubmitArticleCommand = new RelayCommand(SubmitArticle, () => SelectedPublisher != null && !string.IsNullOrWhiteSpace(SubmissionIssn));
-        DownloadAllJsonCommand = new RelayCommand(DownloadAllJson);
-        DownloadAllXmlCommand = new RelayCommand(DownloadAllXml);
+        SetSubmissionMessage(DefaultSubmissionMessage, "#70757A");
+        UpdateSubmitButton();
     }
 
-    public void Initialize(Action<Article> openArticleAction)
+    public void Initialize(Action<Article> openArticle)
     {
-        var repository = new ArticleRepository();
-        Articles = repository.Articles
-            .Select(article => new ArticleListItem(article, openArticleAction))
-            .ToList();
-        
-        Publishers = PublisherRepository.GetAll().ToList();
-        
-        DataContext = this;
-        OnPropertyChanged(nameof(Articles));
-        OnPropertyChanged(nameof(Publishers));
-    }
-
-    public List<ArticleListItem> Articles { get; private set; } = new();
-    public List<Publisher> Publishers { get; private set; } = new();
-    public IRelayCommand SubmitArticleCommand { get; }
-    public IRelayCommand DownloadAllJsonCommand { get; }
-    public IRelayCommand DownloadAllXmlCommand { get; }
-
-    public Publisher? SelectedPublisher
-    {
-        get => _selectedPublisher;
-        set
-        {
-            _selectedPublisher = value;
-            _submissionMessage = "Ваша статья будет отправлена на проверку в выбранное издательство.";
-            _isSuccessMessage = false;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(SubmissionMessage));
-            OnPropertyChanged(nameof(MessageForeground));
-            SubmitArticleCommand.NotifyCanExecuteChanged();
-        }
-    }
-
-    public string SubmissionIssn
-    {
-        get => _submissionIssn;
-        set
-        {
-            _submissionIssn = value;
-            _submissionMessage = "Ваша статья будет отправлена на проверку в выбранное издательство.";
-            _isSuccessMessage = false;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(SubmissionMessage));
-            OnPropertyChanged(nameof(MessageForeground));
-            SubmitArticleCommand.NotifyCanExecuteChanged();
-        }
-    }
-
-    public string SubmissionMessage => _submissionMessage;
-    public string MessageForeground => _isSuccessMessage ? "#34A853" : (_submissionMessage.Contains("не соответствует") || _submissionMessage.Contains("не найдена") ? "#EA4335" : "#70757A");
-
-    private void SubmitArticle()
-    {
-        if (SelectedPublisher == null || string.IsNullOrWhiteSpace(SubmissionIssn)) return;
+        _openArticle = openArticle;
 
         var repository = new ArticleRepository();
-        var article = repository.Articles.FirstOrDefault(a => a.ISSN == SubmissionIssn);
+        _articles.Clear();
+        _articles.AddRange(repository.Articles.Select(article => new ArticleListItem(article)));
+
+        ArticlesList.ItemsSource = null;
+        ArticlesList.ItemsSource = _articles;
+
+        PublishersComboBox.ItemsSource = PublisherRepository.GetAll();
+        _submissionSucceeded = false;
+        ClearSubmissionForm();
+        ResetSubmissionMessage();
+        UpdateSubmitButton();
+    }
+
+    private void ArticleButton_Click(object? sender, RoutedEventArgs e)
+    {
+        if (sender is Button { DataContext: ArticleListItem item })
+            _openArticle?.Invoke(item.Article);
+    }
+    private void PublisherComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (ShouldResetSubmissionMessage())
+        {
+            _submissionSucceeded = false;
+            ResetSubmissionMessage();
+        }
+
+        UpdateSubmitButton();
+    }
+    private void SubmissionIssnTextBox_TextChanged(object? sender, TextChangedEventArgs e)
+    {
+        if (ShouldResetSubmissionMessage())
+        {
+            _submissionSucceeded = false;
+            ResetSubmissionMessage();
+        }
+
+        UpdateSubmitButton();
+    }
+    private void SubmitArticleButton_Click(object? sender, RoutedEventArgs e)
+    {
+        var publisher = PublishersComboBox.SelectedItem as Publisher;
+        var issn = SubmissionIssnTextBox.Text?.Trim();
+
+        if (publisher == null || string.IsNullOrWhiteSpace(issn))
+            return;
+
+        var repository = new ArticleRepository();
+        var article = repository.Articles.FirstOrDefault(current =>
+            string.Equals(current.ISSN, issn, StringComparison.OrdinalIgnoreCase));
 
         if (article == null)
         {
-            _submissionMessage = "Статья с таким ISSN не найдена.";
-            _isSuccessMessage = false;
-            OnPropertyChanged(nameof(SubmissionMessage));
-            OnPropertyChanged(nameof(MessageForeground));
+            SetSubmissionMessage("Статья с таким ISSN не найдена.", "#EA4335");
             return;
         }
 
-        bool matchesTheme = SelectedPublisher.Themes.Any(theme => 
-            article.KeyWords.Contains(theme, StringComparer.OrdinalIgnoreCase));
+        article.AddPublisher(publisher);
 
-        if (!matchesTheme)
+        if (!string.Equals(article.Publisher?.Name, publisher.Name, StringComparison.Ordinal))
         {
-            _submissionMessage = "Тематика статьи не соответствует темам издательства.";
-            _isSuccessMessage = false;
-            OnPropertyChanged(nameof(SubmissionMessage));
-            OnPropertyChanged(nameof(MessageForeground));
+            SetSubmissionMessage("Тематика статьи не соответствует темам издательства.", "#EA4335");
             return;
         }
 
-        _submissionMessage = "Статья успешно отправлена!";
-        _isSuccessMessage = true;
-        OnPropertyChanged(nameof(SubmissionMessage));
-        OnPropertyChanged(nameof(MessageForeground));
+        repository.SaveArticle(article, article.ISSN.Replace(" ", "_"));
 
-        _submissionIssn = string.Empty;
-        _selectedPublisher = null;
-        OnPropertyChanged(nameof(SubmissionIssn));
-        OnPropertyChanged(nameof(SelectedPublisher));
-        SubmitArticleCommand.NotifyCanExecuteChanged();
+        _submissionSucceeded = true;
+        ClearSubmissionForm();
+        SetSubmissionMessage("Статья успешно отправлена!", "#34A853");
+        UpdateSubmitButton();
     }
 
-    private void DownloadAllJson()
+    private void DownloadAllJson_Click(object? sender, RoutedEventArgs e)
+    {
+        SaveAllArticles(
+            "ArticlesJSON",
+            (fileName, folderPath) => new JsonFileManager<Article>(fileName, folderPath));
+    }
+    private void DownloadAllXml_Click(object? sender, RoutedEventArgs e)
+    {
+        SaveAllArticles(
+            "ArticlesXML",
+            (fileName, folderPath) => new XmlFileManager<Article>(fileName, folderPath));
+    }
+    private void DownloadAllTxt_Click(object? sender, RoutedEventArgs e)
+    {
+        SaveAllArticles(
+            "ArticlesTXT",
+            (fileName, folderPath) => new TxtFileManager<Article>(fileName, folderPath));
+    }
+    private void SaveAllArticles(string folderName, Func<string, string, FileManager<Article>> createManager)
     {
         var repository = new ArticleRepository();
-        var folderPath = ExportHelper.EnsureExportFolder("ArticlesJSON");
+        var folderPath = ExportHelper.EnsureExportFolder(folderName);
 
-        foreach (var item in Articles)
+        foreach (var item in _articles)
         {
-            var article = repository.Articles.FirstOrDefault(a => a.Title == item.Title);
-            if (article != null)
-            {
-                var fileName = ExportHelper.GetSafeFileName(article.Title);
-                var manager = new JsonFileManager<Article>(fileName, folderPath);
-                manager.Serialize(article);
-            }
+            var article = repository.Articles.FirstOrDefault(current => current.ISSN == item.Article.ISSN)
+                          ?? item.Article;
+            var fileName = ExportHelper.GetSafeFileName(article.Title);
+            var manager = createManager(fileName, folderPath);
+
+            manager.Serialize(article);
         }
     }
-
-    private void DownloadAllXml()
+    private void ResetSubmissionMessage()
     {
-        var repository = new ArticleRepository();
-        var folderPath = ExportHelper.EnsureExportFolder("ArticlesXML");
+        SetSubmissionMessage(DefaultSubmissionMessage, "#70757A");
+    }
+    private void ClearSubmissionForm()
+    {
+        _isUpdatingSubmissionForm = true;
 
-        foreach (var item in Articles)
+        try
         {
-            var article = repository.Articles.FirstOrDefault(a => a.Title == item.Title);
-            if (article != null)
-            {
-                var fileName = ExportHelper.GetSafeFileName(article.Title);
-                var manager = new XmlFileManager<Article>(fileName, folderPath);
-                manager.Serialize(article);
-            }
+            SubmissionIssnTextBox.Text = string.Empty;
+            PublishersComboBox.SelectedItem = null;
+        }
+        finally
+        {
+            _isUpdatingSubmissionForm = false;
         }
     }
-
-    public new event PropertyChangedEventHandler? PropertyChanged;
-
-    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    private bool ShouldResetSubmissionMessage()
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        if (_isUpdatingSubmissionForm)
+            return false;
+
+        return !_submissionSucceeded || !IsSubmissionFormEmpty();
+    }
+    private bool IsSubmissionFormEmpty() =>
+        PublishersComboBox.SelectedItem == null &&
+        string.IsNullOrWhiteSpace(SubmissionIssnTextBox.Text);
+    private void SetSubmissionMessage(string message, string color)
+    {
+        SubmissionMessageText.Text = message;
+        SubmissionMessageText.Foreground = Brush.Parse(color);
+    }
+    private void UpdateSubmitButton()
+    {
+        SubmitArticleButton.IsEnabled =
+            PublishersComboBox.SelectedItem is Publisher &&
+            !string.IsNullOrWhiteSpace(SubmissionIssnTextBox.Text);
     }
 }

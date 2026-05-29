@@ -1,9 +1,8 @@
 using System;
 using System.Globalization;
-using System.IO;
+using System.Linq;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using CommunityToolkit.Mvvm.Input;
+using Avalonia.Interactivity;
 using Model.Core;
 using Model.Data;
 using Model.Interfaces;
@@ -12,9 +11,8 @@ namespace ScientistPlatform.Views;
 
 public partial class ArticleView : UserControl
 {
-    private readonly Article _article;
-    private readonly Action _goBack;
-
+    private Article _article = null!;
+    private Action _goBack = null!;
     public ArticleView()
     {
         InitializeComponent();
@@ -26,86 +24,85 @@ public partial class ArticleView : UserControl
         
         _article = article;
         _goBack = goBack;
-        
-        Title = _article.Title;
-        Text = _article.Text;
-        Type = _article.Type switch
+
+        ShowArticle(article);
+    }
+
+    private void ShowArticle(Article article)
+    {
+        TitleText.Text = article.Title;
+        IssnText.Text = $"ISSN: {article.ISSN}";
+        TypeText.Text = GetArticleTypeName(article.Type);
+        PublishedAtText.Text = $"Опубликовано: {article.PublishedAt.ToString("d MMMM yyyy", CultureInfo.GetCultureInfo("ru-RU"))}";
+        AuthorsText.Text = $"Авторы: {article.JoinAuthors()}";
+        ArticleText.Text = article.Text;
+
+        SetSection(MethodologyPanel, MethodologyText, null);
+        SetSection(ResultsPanel, ResultsText, null);
+        SetSection(CaseDescriptionPanel, CaseDescriptionText, null);
+        SetSection(ConclusionsPanel, ConclusionsText, null);
+        SetSection(ReviewPeriodPanel, ReviewPeriodText, null);
+        SetSection(SourcesPanel, SourcesText, null);
+
+        switch (article)
+        {
+            case ResearchArticle research:
+                SetSection(MethodologyPanel, MethodologyText, research.Methodology);
+                SetSection(ResultsPanel, ResultsText, research.Results);
+                break;
+
+            case CaseStudy caseStudy:
+                SetSection(CaseDescriptionPanel, CaseDescriptionText, caseStudy.CaseDescription);
+                SetSection(ConclusionsPanel, ConclusionsText, caseStudy.Conclusions);
+                break;
+
+            case ReviewArticle review:
+                SetSection(ReviewPeriodPanel, ReviewPeriodText, review.ReviewPeriod);
+                SetSection(SourcesPanel, SourcesText, string.Join(", ", review.Sources));
+                break;
+        }
+    }
+
+    private static string GetArticleTypeName(ArticleType type) =>
+        type switch
         {
             ArticleType.Research => "Исследование",
             ArticleType.Review => "Обзор",
             ArticleType.CaseStudy => "Кейс-стади",
             _ => "Статья"
         };
-        PublishedAt = _article.PublishedAt.ToString("d MMMM yyyy", CultureInfo.GetCultureInfo("ru-RU"));
-        Authors = _article.JoinAuthors();
-        ISSN = _article.ISSN;
-
-        if (_article is ResearchArticle research)
-        {
-            Methodology = research.Methodology;
-            Results = research.Results;
-        }
-        else if (_article is CaseStudy caseStudy)
-        {
-            CaseDescription = caseStudy.CaseDescription;
-            Conclusions = caseStudy.Conclusions;
-        }
-        else if (_article is ReviewArticle review)
-        {
-            ReviewPeriod = review.ReviewPeriod;
-            Sources = string.Join(", ", review.Sources);
-        }
-        
-        BackCommand = new RelayCommand(_goBack);
-        DownloadJsonCommand = new RelayCommand(DownloadJson);
-        DownloadXmlCommand = new RelayCommand(DownloadXml);
-
-        DataContext = this;
-    }
-
-    private void InitializeComponent()
+    private static void SetSection(StackPanel panel, SelectableTextBlock textBlock, string? text)
     {
-        AvaloniaXamlLoader.Load(this);
+        var hasText = !string.IsNullOrWhiteSpace(text);
+        panel.IsVisible = hasText;
+        textBlock.Text = hasText ? text : string.Empty;
     }
-
-    public string Title { get; }
-    public string Text { get; }
-    public string Type { get; }
-    public string PublishedAt { get; }
-    public string Authors { get; }
-    public string ISSN { get; }
-
-    public string? Methodology { get; }
-    public string? Results { get; }
-    public string? CaseDescription { get; }
-    public string? Conclusions { get; }
-    public string? Sources { get; }
-    public string? ReviewPeriod { get; }
-
-    public bool HasMethodology => !string.IsNullOrEmpty(Methodology);
-    public bool HasResults => !string.IsNullOrEmpty(Results);
-    public bool HasCaseDescription => !string.IsNullOrEmpty(CaseDescription);
-    public bool HasConclusions => !string.IsNullOrEmpty(Conclusions);
-    public bool HasSources => !string.IsNullOrEmpty(Sources);
-    public bool HasReviewPeriod => !string.IsNullOrEmpty(ReviewPeriod);
-
-    public IRelayCommand BackCommand { get; }
-    public IRelayCommand DownloadJsonCommand { get; }
-    public IRelayCommand DownloadXmlCommand { get; }
-
-    private void DownloadJson()
+    private void BackButton_Click(object? sender, RoutedEventArgs e)
     {
-        var downloadsPath = ExportHelper.GetDownloadsPath();
-        var fileName = ExportHelper.GetSafeFileName(Title);
-        var manager = new JsonFileManager<Article>(fileName, downloadsPath);
-        manager.Serialize(_article);
+        _goBack();
     }
-
-    private void DownloadXml()
+    private void DownloadJsonButton_Click(object? sender, RoutedEventArgs e)
     {
-        var downloadsPath = ExportHelper.GetDownloadsPath();
-        var fileName = ExportHelper.GetSafeFileName(Title);
-        var manager = new XmlFileManager<Article>(fileName, downloadsPath);
-        manager.Serialize(_article);
+        SaveArticle((fileName, folderPath) => new JsonFileManager<Article>(fileName, folderPath));
+    }
+    private void DownloadXmlButton_Click(object? sender, RoutedEventArgs e)
+    {
+        SaveArticle((fileName, folderPath) => new XmlFileManager<Article>(fileName, folderPath));
+    }
+    private void DownloadTxtButton_Click(object? sender, RoutedEventArgs e)
+    {
+        SaveArticle((fileName, folderPath) => new TxtFileManager<Article>(fileName, folderPath));
+    }
+    private void SaveArticle(Func<string, string, FileManager<Article>> createManager)
+    {
+        var article = GetLatestArticle();
+        var fileName = ExportHelper.GetSafeFileName(article.Title);
+        var manager = createManager(fileName, ExportHelper.GetDownloadsPath());
+        manager.Serialize(article);
+    }
+    private Article GetLatestArticle()
+    {
+        var repository = new ArticleRepository();
+        return repository.Articles.FirstOrDefault(article => article.ISSN == _article.ISSN) ?? _article;
     }
 }

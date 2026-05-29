@@ -1,10 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="using:ScientistPlatform"
              xmlns:views="using:ScientistPlatform.Views"
              xmlns:model="using:Model.Core"
              x:Class="ScientistPlatform.Views.CatalogView"
-             x:DataType="views:CatalogView"
              Background="#FFFFFF">
     <UserControl.Styles>
         <Style Selector="TextBox.searchInput">
@@ -161,7 +159,7 @@
         <Border BorderBrush="#DADCE0"
                 BorderThickness="0,0,0,1">
             <Grid Margin="38,0,39,0"
-                  ColumnDefinitions="Auto,48,Auto,14,*,14,Auto,14,Auto,14,Auto"
+                  ColumnDefinitions="Auto,48,Auto,14,*,14,Auto"
                   VerticalAlignment="Center">
                 <StackPanel Grid.Column="0"
                             Orientation="Horizontal"
@@ -194,16 +192,6 @@
                 </TextBox>
 
                 <Button Grid.Column="6" Classes="headerAction" Content="Поиск"/>
-
-                <Button Grid.Column="8" Classes="headerAction" Content="Скачать статьи">
-                    <Button.Flyout>
-                        <MenuFlyout x:DataType="views:CatalogView">
-                            <MenuItem Header="Сохранить в JSON" Command="{Binding DownloadAllJsonCommand}"/>
-                            <MenuItem Header="Сохранить в XML" Command="{Binding DownloadAllXmlCommand}"/>
-                        </MenuFlyout>
-                    </Button.Flyout>
-                </Button>
-                <Button Grid.Column="10" Classes="headerAction" Content="Создать ссылку на статью"/>
             </Grid>
         </Border>
 
@@ -212,11 +200,13 @@
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Hidden"
                           Padding="0,0,20,0">
-                <ItemsControl ItemsSource="{Binding Articles}"
+                <ItemsControl x:Name="ArticlesList"
                               HorizontalAlignment="Stretch">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="local:ArticleListItem">
-                            <Button Classes="articleItem" Command="{Binding OpenCommand}" Margin="0,0,0,21">
+                        <DataTemplate x:DataType="views:ArticleListItem">
+                            <Button Classes="articleItem"
+                                    Margin="0,0,0,21"
+                                    Click="ArticleButton_Click">
                                 <Border Padding="19,17,19,17"
                                         MinHeight="128"
                                         BorderBrush="#4285F4"
@@ -246,62 +236,86 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <Border Grid.Column="1" 
-                    Background="#FFFFFF" 
-                    Margin="40,0,0,40"
-                    CornerRadius="20" 
-                    Padding="25"
-                    BorderBrush="#4285F4"
-                    BorderThickness="3"
-                    VerticalAlignment="Top">
-                <StackPanel Spacing="20">
-                    <TextBlock Text="Отправить статью" 
-                               FontSize="22" 
-                               FontWeight="Bold" 
-                               Foreground="#202124"
-                               HorizontalAlignment="Left"/>
-                    
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="Издательство" 
-                                   FontSize="14" 
-                                   FontWeight="SemiBold"
-                                   Foreground="#5F6368"/>
-                        <ComboBox ItemsSource="{Binding Publishers}" 
-                                  SelectedItem="{Binding SelectedPublisher}"
-                                  Classes="formInput"
-                                  HorizontalAlignment="Stretch">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate x:DataType="model:Publisher">
-                                    <TextBlock Text="{Binding Name}"/>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+            <StackPanel Grid.Column="1"
+                        Margin="40,0,0,40"
+                        Spacing="18"
+                        VerticalAlignment="Top">
+                <Border Background="#FFFFFF"
+                        CornerRadius="20"
+                        Padding="25"
+                        BorderBrush="#4285F4"
+                        BorderThickness="3">
+                    <StackPanel Spacing="20">
+                        <TextBlock Text="Отправить статью"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   Foreground="#202124"
+                                   HorizontalAlignment="Left"/>
+
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Издательство"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="#5F6368"/>
+                            <ComboBox x:Name="PublishersComboBox"
+                                      Classes="formInput"
+                                      HorizontalAlignment="Stretch"
+                                      SelectionChanged="PublisherComboBox_SelectionChanged">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="model:Publisher">
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="ISSN статьи"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="#5F6368"/>
+                            <TextBox x:Name="SubmissionIssnTextBox"
+                                     Classes="formInput"
+                                     PlaceholderText="Напр. 1234-5678"
+                                     TextChanged="SubmissionIssnTextBox_TextChanged"/>
+                        </StackPanel>
+
+                        <Button x:Name="SubmitArticleButton"
+                                Classes="submit"
+                                Content="Отправить статью"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                Click="SubmitArticleButton_Click"
+                                IsEnabled="False"
+                                Margin="0,5,0,0"/>
+
+                        <TextBlock x:Name="SubmissionMessageText"
+                                   Text="Ваша статья будет отправлена на проверку в выбранное издательство."
+                                   FontSize="12"
+                                   Foreground="#70757A"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Left"/>
                     </StackPanel>
+                </Border>
 
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="ISSN статьи" 
-                                   FontSize="14" 
-                                   FontWeight="SemiBold"
-                                   Foreground="#5F6368"/>
-                        <TextBox Text="{Binding SubmissionIssn}" 
-                                 Classes="formInput"
-                                 PlaceholderText="Напр. 1234-5678"/>
-                    </StackPanel>
+                <Button Classes="headerAction"
+                        Content="Скачать статьи"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center">
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuItem Header="Сохранить в JSON" Click="DownloadAllJson_Click"/>
+                            <MenuItem Header="Сохранить в XML" Click="DownloadAllXml_Click"/>
+                            <MenuItem Header="Сохранить в TXT" Click="DownloadAllTxt_Click"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
 
-                    <Button Classes="submit" 
-                            Content="Отправить статью"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center"
-                            Command="{Binding SubmitArticleCommand}"
-                            Margin="0,5,0,0"/>
-
-                    <TextBlock Text="{Binding SubmissionMessage}"
-                               FontSize="12"
-                               Foreground="{Binding MessageForeground}"
-                               TextWrapping="Wrap"
-                               TextAlignment="Left"/>
-                </StackPanel>
-            </Border>
+                <Button Classes="headerAction"
+                        Content="Создать ссылку на статью"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>
