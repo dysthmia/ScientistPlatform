@@ -17,6 +17,7 @@ public partial class CatalogView : UserControl
 
     private readonly List<ArticleListItem> _articles = new();
     private Action<Article>? _openArticle;
+    private Action? _openCitation;
     private bool _isUpdatingSubmissionForm;
     private bool _submissionSucceeded;
 
@@ -40,9 +41,10 @@ public partial class CatalogView : UserControl
     private string? _activeCriterion;
     private string? _activeCriteriaValue;
 
-    public void Initialize(Action<Article> openArticle)
+    public void Initialize(Action<Article> openArticle, Action openCitation)
     {
         _openArticle = openArticle;
+        _openCitation = openCitation;
 
         var repository = new ArticleRepository();
         _articles.Clear();
@@ -293,6 +295,12 @@ public partial class CatalogView : UserControl
             _isUpdatingSubmissionForm = false;
         }
     }
+
+    private void OpenCitationView_Click(object? sender, RoutedEventArgs e)
+    {
+        _openCitation?.Invoke();
+    }
+
     private bool ShouldResetSubmissionMessage()
     {
         if (_isUpdatingSubmissionForm)

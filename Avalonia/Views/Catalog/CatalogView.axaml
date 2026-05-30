@@ -354,7 +354,13 @@
                         <DataTemplate x:DataType="views:ArticleListItem">
                             <Button Classes="articleItem"
                                     Margin="0,0,0,21"
-                                    Click="ArticleButton_Click">
+                                    Click="ArticleButton_Click"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    Background="Transparent"
+                                    Padding="0"
+                                    BorderThickness="0"
+                                    Cursor="Hand">
                                 <Border Padding="19,17,19,17"
                                         MinHeight="128"
                                         BorderBrush="#4285F4"
@@ -461,7 +467,8 @@
                 <Button Classes="action headerAction"
                         Content="Создать ссылку на статью"
                         HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Center"/>
+                        HorizontalContentAlignment="Center"
+                        Click="OpenCitationView_Click"/>
             </StackPanel>
         </Grid>
     </Grid>

@@ -1,10 +1,11 @@
 using Model.Interfaces;
+using Model.Data;
 
 namespace Model.Core;
 
 public static class CitationService
 {
-    private const string CitationsFolder = "citations";
+    private const string CitationsFolder = "Citations";
 
     public static string CreateCitation(Article article, Publisher publisher)
     {
@@ -25,7 +26,7 @@ public static class CitationService
         if (string.IsNullOrWhiteSpace(fileName))
             throw new ArgumentException("Имя файла не может быть пустым.", nameof(fileName));
 
-        Directory.CreateDirectory(CitationsFolder);
+        var folderPath = ExportHelper.EnsureExportFolder(CitationsFolder);
 
         var safeName = Path.GetInvalidFileNameChars()
             .Aggregate(fileName, (current, c) => current.Replace(c, '_'));
@@ -33,7 +34,7 @@ public static class CitationService
         if (!safeName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
             safeName += ".txt";
 
-        var fullPath = Path.Combine(CitationsFolder, safeName);
+        var fullPath = Path.Combine(folderPath, safeName);
         File.WriteAllText(fullPath, citation);
         return fullPath;
     }
