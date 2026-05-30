@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -20,6 +19,7 @@ public partial class CatalogView : UserControl
     private Action<Article>? _openArticle;
     private bool _isUpdatingSubmissionForm;
     private bool _submissionSucceeded;
+
     public CatalogView()
     {
         InitializeComponent();
@@ -37,6 +37,8 @@ public partial class CatalogView : UserControl
 
     private string? _activeSearchText;
     private SortMode _activeSortMode = SortMode.AlphabeticalAsc;
+    private string? _activeCriterion;
+    private string? _activeCriteriaValue;
 
     public void Initialize(Action<Article> openArticle)
     {
@@ -46,16 +48,8 @@ public partial class CatalogView : UserControl
         _articles.Clear();
         _articles.AddRange(repository.Articles.Select(article => new ArticleListItem(article)));
 
-        _activeSearchText = null;
-        _activeSortMode = SortMode.AlphabeticalAsc;
-
-        UpdateArticlesList();
-
         PublishersComboBox.ItemsSource = PublisherRepository.GetAll();
-        _submissionSucceeded = false;
-        ClearSubmissionForm();
-        ResetSubmissionMessage();
-        UpdateSubmitButton();
+        Logo_Click(null, new RoutedEventArgs());
     }
 
     private void MainSearchTextBox_TextChanged(object? sender, TextChangedEventArgs e)
@@ -77,6 +71,22 @@ public partial class CatalogView : UserControl
         UpdateArticlesList();
     }
 
+    private void CriteriaInputs_Changed(object? sender, RoutedEventArgs e)
+    {
+        ApplyCriteriaButton.IsEnabled = CriteriaComboBox.SelectedItem != null && 
+                                        !string.IsNullOrWhiteSpace(CriteriaValueTextBox.Text);
+    }
+
+    private void ApplyCriteria_Click(object? sender, RoutedEventArgs e)
+    {
+        var selectedItem = CriteriaComboBox.SelectedItem as ComboBoxItem;
+        _activeCriterion = selectedItem?.Tag?.ToString();
+        _activeCriteriaValue = CriteriaValueTextBox.Text?.Trim();
+        
+        CriteriaButton.Flyout?.Hide();
+        UpdateArticlesList();
+    }
+
     private void ApplySort_Click(object? sender, RoutedEventArgs e)
     {
         if (SortAZRadio.IsChecked == true) _activeSortMode = SortMode.AlphabeticalAsc;
@@ -92,9 +102,18 @@ public partial class CatalogView : UserControl
     {
         _activeSearchText = null;
         _activeSortMode = SortMode.AlphabeticalAsc;
+        _activeCriterion = null;
+        _activeCriteriaValue = null;
 
         MainSearchTextBox.Text = string.Empty;
+        CriteriaValueTextBox.Text = string.Empty;
+        CriteriaComboBox.SelectedItem = null;
         SortAZRadio.IsChecked = true;
+
+        _submissionSucceeded = false;
+        ClearSubmissionForm();
+        ResetSubmissionMessage();
+        UpdateSubmitButton();
 
         UpdateArticlesList();
     }
@@ -104,6 +123,26 @@ public partial class CatalogView : UserControl
     {
         IEnumerable<ArticleListItem> filtered = _articles;
 
+        // Apply Criteria Filter
+        if (!string.IsNullOrEmpty(_activeCriterion) && !string.IsNullOrEmpty(_activeCriteriaValue))
+        {
+            var criteriaWords = _activeCriteriaValue.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            filtered = filtered.Where(item =>
+            {
+                var article = item.Article;
+                return _activeCriterion switch
+                {
+                    "Title" => criteriaWords.All(word => article.Title.Contains(word, StringComparison.OrdinalIgnoreCase)),
+                    "ISSN" => article.ISSN.Contains(_activeCriteriaValue, StringComparison.OrdinalIgnoreCase),
+                    "KeyWords" => article.KeyWords.Any(k => k.Contains(_activeCriteriaValue, StringComparison.OrdinalIgnoreCase)),
+                    "Type" => GetArticleTypeName(article.Type).Contains(_activeCriteriaValue, StringComparison.OrdinalIgnoreCase),
+                    "PublishedAt" => article.PublishedAt.ToString("dd.MM.yyyy").Contains(_activeCriteriaValue),
+                    _ => true
+                };
+            });
+        }
+
+        // Apply Main Search (Title and Author.Name)
         if (!string.IsNullOrEmpty(_activeSearchText))
         {
             var searchWords = _activeSearchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -121,6 +160,7 @@ public partial class CatalogView : UserControl
             });
         }
 
+        // Apply Sort
         filtered = _activeSortMode switch
         {
             SortMode.AlphabeticalAsc => filtered.OrderBy(item => item.Article.Title),
