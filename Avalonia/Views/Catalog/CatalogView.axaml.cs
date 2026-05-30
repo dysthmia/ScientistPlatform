@@ -7,6 +7,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Model.Core;
 using Model.Data;
+using Model.Interfaces;
 
 namespace ScientistPlatform.Views;
 
@@ -26,6 +27,8 @@ public partial class CatalogView : UserControl
         UpdateSubmitButton();
     }
 
+    private string? _activeSearchText;
+
     public void Initialize(Action<Article> openArticle)
     {
         _openArticle = openArticle;
@@ -34,8 +37,9 @@ public partial class CatalogView : UserControl
         _articles.Clear();
         _articles.AddRange(repository.Articles.Select(article => new ArticleListItem(article)));
 
-        ArticlesList.ItemsSource = null;
-        ArticlesList.ItemsSource = _articles;
+        _activeSearchText = null;
+
+        UpdateArticlesList();
 
         PublishersComboBox.ItemsSource = PublisherRepository.GetAll();
         _submissionSucceeded = false;
@@ -43,6 +47,74 @@ public partial class CatalogView : UserControl
         ResetSubmissionMessage();
         UpdateSubmitButton();
     }
+
+    private void MainSearchTextBox_TextChanged(object? sender, TextChangedEventArgs e)
+    {
+        SearchButton.IsEnabled = !string.IsNullOrWhiteSpace(MainSearchTextBox.Text);
+    }
+
+    private void MainSearchTextBox_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
+    {
+        if ((e.Key == Avalonia.Input.Key.Enter || e.Key == Avalonia.Input.Key.Return) && SearchButton.IsEnabled)
+        {
+            SearchButton_Click(null, new RoutedEventArgs());
+        }
+    }
+
+    private void SearchButton_Click(object? sender, RoutedEventArgs e)
+    {
+        _activeSearchText = MainSearchTextBox.Text?.Trim();
+        UpdateArticlesList();
+    }
+
+    private void Logo_Click(object? sender, RoutedEventArgs e)
+    {
+        _activeSearchText = null;
+
+        // Reset UI
+        MainSearchTextBox.Text = string.Empty;
+
+        UpdateArticlesList();
+    }
+
+
+    private void UpdateArticlesList()
+    {
+        IEnumerable<ArticleListItem> filtered = _articles;
+
+        // Apply Main Search (Title and Author.Name)
+        if (!string.IsNullOrEmpty(_activeSearchText))
+        {
+            var searchWords = _activeSearchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            filtered = filtered.Where(item =>
+            {
+                var article = item.Article;
+                
+                bool titleMatches = searchWords.All(word => 
+                    article.Title.Contains(word, StringComparison.OrdinalIgnoreCase));
+                
+                bool authorMatches = article.Authors.Any(a => 
+                    searchWords.All(word => a.Name.Contains(word, StringComparison.OrdinalIgnoreCase)));
+
+                return titleMatches || authorMatches;
+            });
+        }
+
+        // Default Sort
+        filtered = filtered.OrderBy(item => item.Article.Title);
+
+        ArticlesList.ItemsSource = null;
+        ArticlesList.ItemsSource = filtered.ToList();
+    }
+
+    private static string GetArticleTypeName(ArticleType type) =>
+        type switch
+        {
+            ArticleType.Research => "Исследование",
+            ArticleType.Review => "Обзор",
+            ArticleType.CaseStudy => "Кейс-стади",
+            _ => "Статья"
+        };
 
     private void ArticleButton_Click(object? sender, RoutedEventArgs e)
     {

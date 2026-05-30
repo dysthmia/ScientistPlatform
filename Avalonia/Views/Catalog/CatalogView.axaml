@@ -34,6 +34,10 @@
             <Setter Property="Background" Value="#3367D6"/>
             <Setter Property="Foreground" Value="#FFFFFF"/>
         </Style>
+        <Style Selector="Button.headerAction:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="Foreground" Value="#9E9E9E"/>
+        </Style>
         
         <Style Selector="Button.articleItem">
             <Setter Property="Background" Value="Transparent"/>
@@ -159,25 +163,37 @@
         <Border BorderBrush="#DADCE0"
                 BorderThickness="0,0,0,1">
             <Grid Margin="38,0,110,0"
-                  ColumnDefinitions="Auto,48,Auto,14,*,14,Auto"
+                  ColumnDefinitions="Auto,48,*,14,Auto"
                   VerticalAlignment="Center">
-                <StackPanel Grid.Column="0"
-                            Orientation="Horizontal"
-                            VerticalAlignment="Center">
-                    <TextBlock Text="Sci" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
-                    <TextBlock Text="ent" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
-                    <TextBlock Text="ist" FontSize="36" FontWeight="Bold" Foreground="#FBBC05"/>
-                    <TextBlock Text=" " FontSize="36" FontWeight="Bold"/>
-                    <TextBlock Text="Pla" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
-                    <TextBlock Text="tf" FontSize="36" FontWeight="Bold" Foreground="#34A853"/>
-                    <TextBlock Text="orm" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
-                </StackPanel>
+                <Button Grid.Column="0" 
+                        Background="Transparent" 
+                        Padding="0" 
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Click="Logo_Click">
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="Sci" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
+                        <TextBlock Text="ent" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
+                        <TextBlock Text="ist" FontSize="36" FontWeight="Bold" Foreground="#FBBC05"/>
+                        <TextBlock Text=" " FontSize="36" FontWeight="Bold"/>
+                        <TextBlock Text="Pla" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
+                        <TextBlock Text="tf" FontSize="36" FontWeight="Bold" Foreground="#34A853"/>
+                        <TextBlock Text="orm" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
+                    </StackPanel>
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
 
-                <Button Grid.Column="2" Classes="headerAction" Content="Фильтры"/>
-
-                <TextBox Grid.Column="4"
+                <TextBox x:Name="MainSearchTextBox"
+                         Grid.Column="2"
                          Classes="searchInput"
-                         PlaceholderText="Поиск статей...">
+                         PlaceholderText="Поиск статей..."
+                         TextChanged="MainSearchTextBox_TextChanged"
+                         KeyDown="MainSearchTextBox_KeyDown">
                     <TextBox.Resources>
                         <SolidColorBrush x:Key="TextControlBackground">#FFFFFF</SolidColorBrush>
                         <SolidColorBrush x:Key="TextControlBackgroundPointerOver">#FFFFFF</SolidColorBrush>
@@ -191,7 +207,12 @@
                     </TextBox.Resources>
                 </TextBox>
 
-                <Button Grid.Column="6" Classes="headerAction" Content="Поиск"/>
+                <Button x:Name="SearchButton" 
+                        Grid.Column="4" 
+                        Classes="headerAction" 
+                        Content="Найти статьи"
+                        IsEnabled="False"
+                        Click="SearchButton_Click"/>
             </Grid>
         </Border>
 
