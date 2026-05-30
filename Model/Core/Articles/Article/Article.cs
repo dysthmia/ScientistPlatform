@@ -104,6 +104,21 @@ public abstract partial  class Article : IArticle
         _authors.Remove(author);
     }
 
+    public static bool operator ==(Article? a1, Article? a2)
+    {
+        if (ReferenceEquals(a1, a2)) return true;
+        if (a1 is null || a2 is null) return false;
+        return string.Equals(a1.ISSN, a2.ISSN, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static bool operator !=(Article? a1, Article? a2) => !(a1 == a2);
+
+    public override bool Equals(object? obj) => 
+        obj is Article article && this == article;
+
+    public override int GetHashCode() => 
+        ISSN?.GetHashCode(StringComparison.OrdinalIgnoreCase) ?? 0;
+
     private void ValidateTitle(string title)
     {
         if (string.IsNullOrWhiteSpace(title))

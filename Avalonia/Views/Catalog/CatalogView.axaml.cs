@@ -228,6 +228,12 @@ public partial class CatalogView : UserControl
             return;
         }
 
+        if (SubmissionService.IsAlreadySubmitted(article))
+        {
+            SetSubmissionMessage("Эта статья уже принадлежит издательству.", "#FBBC05");
+            return;
+        }
+
         article.AddPublisher(publisher);
 
         if (!string.Equals(article.Publisher?.Name, publisher.Name, StringComparison.Ordinal))
