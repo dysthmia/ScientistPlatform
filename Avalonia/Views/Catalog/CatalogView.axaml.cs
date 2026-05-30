@@ -21,25 +21,17 @@ public partial class CatalogView : UserControl
     private bool _isUpdatingSubmissionForm;
     private bool _submissionSucceeded;
 
+    private string? _activeSearchText;
+    private SortMode _activeSortMode = SortMode.AlphabeticalAsc;
+    private string? _activeCriterion;
+    private string? _activeCriteriaValue;
+
     public CatalogView()
     {
         InitializeComponent();
         SetSubmissionMessage(DefaultSubmissionMessage, "#70757A");
         UpdateSubmitButton();
     }
-
-    private enum SortMode
-    {
-        AlphabeticalAsc,
-        AlphabeticalDesc,
-        DateDesc,
-        DateAsc
-    }
-
-    private string? _activeSearchText;
-    private SortMode _activeSortMode = SortMode.AlphabeticalAsc;
-    private string? _activeCriterion;
-    private string? _activeCriteriaValue;
 
     public void Initialize(Action<Article> openArticle, Action openCitation)
     {
@@ -123,67 +115,23 @@ public partial class CatalogView : UserControl
 
     private void UpdateArticlesList()
     {
-        IEnumerable<ArticleListItem> filtered = _articles;
-
-        // Apply Criteria Filter
-        if (!string.IsNullOrEmpty(_activeCriterion) && !string.IsNullOrEmpty(_activeCriteriaValue))
+        var criteria = new SearchCriteria
         {
-            var criteriaWords = _activeCriteriaValue.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            filtered = filtered.Where(item =>
-            {
-                var article = item.Article;
-                return _activeCriterion switch
-                {
-                    "Title" => criteriaWords.All(word => article.Title.Contains(word, StringComparison.OrdinalIgnoreCase)),
-                    "ISSN" => article.ISSN.Contains(_activeCriteriaValue, StringComparison.OrdinalIgnoreCase),
-                    "KeyWords" => article.KeyWords.Any(k => k.Contains(_activeCriteriaValue, StringComparison.OrdinalIgnoreCase)),
-                    "Type" => GetArticleTypeName(article.Type).Contains(_activeCriteriaValue, StringComparison.OrdinalIgnoreCase),
-                    "PublishedAt" => article.PublishedAt.ToString("dd.MM.yyyy").Contains(_activeCriteriaValue),
-                    _ => true
-                };
-            });
-        }
-
-        // Apply Main Search (Title and Author.Name)
-        if (!string.IsNullOrEmpty(_activeSearchText))
-        {
-            var searchWords = _activeSearchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            filtered = filtered.Where(item =>
-            {
-                var article = item.Article;
-                
-                bool titleMatches = searchWords.All(word => 
-                    article.Title.Contains(word, StringComparison.OrdinalIgnoreCase));
-                
-                bool authorMatches = article.Authors.Any(a => 
-                    searchWords.All(word => a.Name.Contains(word, StringComparison.OrdinalIgnoreCase)));
-
-                return titleMatches || authorMatches;
-            });
-        }
-
-        // Apply Sort
-        filtered = _activeSortMode switch
-        {
-            SortMode.AlphabeticalAsc => filtered.OrderBy(item => item.Article.Title),
-            SortMode.AlphabeticalDesc => filtered.OrderByDescending(item => item.Article.Title),
-            SortMode.DateDesc => filtered.OrderByDescending(item => item.Article.PublishedAt),
-            SortMode.DateAsc => filtered.OrderBy(item => item.Article.PublishedAt),
-            _ => filtered
+            Criterion = _activeCriterion,
+            Value = _activeCriteriaValue
         };
+
+        var filteredArticles = ArticleSearchService.FilterAndSort(
+            _articles.Select(item => item.Article),
+            _activeSearchText,
+            _activeSortMode,
+            criteria);
 
         ArticlesList.ItemsSource = null;
-        ArticlesList.ItemsSource = filtered.ToList();
+        ArticlesList.ItemsSource = filteredArticles
+            .Select(article => new ArticleListItem(article))
+            .ToList();
     }
-
-    private static string GetArticleTypeName(ArticleType type) =>
-        type switch
-        {
-            ArticleType.Research => "Исследование",
-            ArticleType.Review => "Обзор",
-            ArticleType.CaseStudy => "Кейс-стади",
-            _ => "Статья"
-        };
 
     private void ArticleButton_Click(object? sender, RoutedEventArgs e)
     {
