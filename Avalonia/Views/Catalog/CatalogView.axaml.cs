@@ -13,7 +13,7 @@ namespace ScientistPlatform.Views;
 public partial class CatalogView : UserControl
 {
     private const string DefaultSubmissionMessage =
-        "Ваша статья будет отправлена на проверку в выбранное издательство.";
+        "Статья будет отправлена на проверку в выбранное издательство.";
 
     private readonly List<ArticleListItem> _articles = new();
     private Action<Article>? _openArticle;

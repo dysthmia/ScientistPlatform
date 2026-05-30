@@ -52,6 +52,6 @@ public class Author
     private void ValidateName (string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException(nameof(name), "name автора не может быть пустым");
+            throw new ArgumentException("Имя автора не может быть пустым", nameof(name));
     }
 }

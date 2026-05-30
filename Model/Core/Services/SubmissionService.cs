@@ -1,5 +1,3 @@
-using Model.Data;
-
 namespace Model.Core;
 
 public static class SubmissionService
@@ -10,6 +8,7 @@ public static class SubmissionService
         
         var repository = new ArticleRepository();
         
+        // Используем перегруженный оператор == для поиска статьи в базе.
         var existingArticle = repository.Articles
             .FirstOrDefault(a => a == article);
 

@@ -69,7 +69,7 @@ public static class ArticleSearchService
         };
     }
 
-    private static string GetArticleTypeName(ArticleType type) =>
+    public static string GetArticleTypeName(ArticleType type) =>
         type switch
         {
             ArticleType.Research => "Исследование",

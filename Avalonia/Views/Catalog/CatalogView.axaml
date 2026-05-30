@@ -59,6 +59,9 @@
                 <SolidColorBrush x:Key="TextControlBorderBrush">#4285F4</SolidColorBrush>
                 <SolidColorBrush x:Key="TextControlBorderBrushPointerOver">#4285F4</SolidColorBrush>
                 <SolidColorBrush x:Key="TextControlBorderBrushFocused">#4285F4</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlPlaceholderForeground">#9AA0A6</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlPlaceholderForegroundPointerOver">#9AA0A6</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlPlaceholderForegroundFocused">#9AA0A6</SolidColorBrush>
             </Style.Resources>
         </Style>
 
@@ -113,8 +116,26 @@
                 <SolidColorBrush x:Key="ComboBoxBorderBrushPointerOver">#4285F4</SolidColorBrush>
                 <SolidColorBrush x:Key="ComboBoxBorderBrushPressed">#4285F4</SolidColorBrush>
                 <SolidColorBrush x:Key="ComboBoxBorderBrushFocused">#4285F4</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxDropDownBackground">#FFFFFF</SolidColorBrush>
             </Style.Resources>
         </Style>
+
+        <Style Selector="ComboBox.formInput ComboBoxItem">
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Margin" Value="4,2"/>
+            <Setter Property="Foreground" Value="#202124"/>
+            <Style.Resources>
+                <SolidColorBrush x:Key="ComboBoxItemForeground">#202124</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemForegroundPointerOver">#202124</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemItemsPresenterBackground">#FFFFFF</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemBackgroundPointerOver">#F1F3F4</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemBackgroundSelected">#E8F0FE</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemBackgroundSelectedPointerOver">#D2E3FC</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemForegroundSelected">#1A73E8</SolidColorBrush>
+            </Style.Resources>
+        </Style>
+
         <Style Selector="ComboBox.formInput:pointerover">
             <Setter Property="BorderBrush" Value="#4285F4"/>
         </Style>
@@ -151,7 +172,6 @@
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="Margin" Value="0,4"/>
             <Style.Resources>
-                <!-- Unchecked State: Blue outline -->
                 <SolidColorBrush x:Key="RadioButtonBorderBrush">#4285F4</SolidColorBrush>
                 <SolidColorBrush x:Key="RadioButtonBorderBrushPointerOver">#3367D6</SolidColorBrush>
                 <SolidColorBrush x:Key="RadioButtonBorderBrushPressed">#1A73E8</SolidColorBrush>
@@ -162,7 +182,6 @@
                 <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokeUnchecked">#4285F4</SolidColorBrush>
                 <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokeUncheckedPointerOver">#3367D6</SolidColorBrush>
                 
-                <!-- Checked State: Blue filled circle with white dot -->
                 <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokeChecked">#4285F4</SolidColorBrush>
                 <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokeCheckedPointerOver">#3367D6</SolidColorBrush>
                 <SolidColorBrush x:Key="RadioButtonOuterEllipseFillChecked">#4285F4</SolidColorBrush>
@@ -173,7 +192,6 @@
                 <SolidColorBrush x:Key="RadioButtonOuterEllipseFillUnchecked">#FFFFFF</SolidColorBrush>
                 <SolidColorBrush x:Key="RadioButtonOuterEllipseFillUncheckedPointerOver">#FFFFFF</SolidColorBrush>
                 
-                <!-- Dark text on hover/press -->
                 <SolidColorBrush x:Key="RadioButtonForegroundPointerOver">#3C4043</SolidColorBrush>
                 <SolidColorBrush x:Key="RadioButtonForegroundPressed">#202124</SolidColorBrush>
             </Style.Resources>
@@ -228,6 +246,10 @@
                 <SolidColorBrush x:Key="MenuFlyoutItemForegroundPointerOver">#202124</SolidColorBrush>
                 <SolidColorBrush x:Key="MenuFlyoutItemBackgroundPointerOver">#F1F3F4</SolidColorBrush>
             </Style.Resources>
+        </Style>
+
+        <Style Selector="MenuItem:pointerover /template/ ContentPresenter#PART_HeaderPresenter">
+            <Setter Property="Foreground" Value="#202124"/>
         </Style>
 
         <Style Selector="Button.articleItem">
@@ -443,7 +465,7 @@
                                 Margin="0,5,0,0"/>
 
                         <TextBlock x:Name="SubmissionMessageText"
-                                   Text="Ваша статья будет отправлена на проверку в выбранное издательство."
+                                   Text="Статья будет отправлена на проверку в выбранное издательство."
                                    FontSize="12"
                                    Foreground="#70757A"
                                    TextWrapping="Wrap"

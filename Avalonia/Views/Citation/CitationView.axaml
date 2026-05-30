@@ -36,8 +36,26 @@
                 <SolidColorBrush x:Key="ComboBoxBorderBrushPointerOver">#4285F4</SolidColorBrush>
                 <SolidColorBrush x:Key="ComboBoxBorderBrushPressed">#4285F4</SolidColorBrush>
                 <SolidColorBrush x:Key="ComboBoxBorderBrushFocused">#4285F4</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxDropDownBackground">#FFFFFF</SolidColorBrush>
             </Style.Resources>
         </Style>
+
+        <Style Selector="ComboBox.formInput ComboBoxItem">
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Margin" Value="4,2"/>
+            <Setter Property="Foreground" Value="#202124"/>
+            <Style.Resources>
+                <SolidColorBrush x:Key="ComboBoxItemForeground">#202124</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemForegroundPointerOver">#202124</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemItemsPresenterBackground">#FFFFFF</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemBackgroundPointerOver">#F1F3F4</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemBackgroundSelected">#E8F0FE</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemBackgroundSelectedPointerOver">#D2E3FC</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemForegroundSelected">#1A73E8</SolidColorBrush>
+            </Style.Resources>
+        </Style>
+
         <Style Selector="ComboBox.formInput:pointerover">
             <Setter Property="BorderBrush" Value="#4285F4"/>
         </Style>
@@ -109,7 +127,6 @@
     </UserControl.Styles>
 
     <Grid RowDefinitions="Auto,*">
-        <!-- Header -->
         <Border BorderBrush="#DADCE0" BorderThickness="0,0,0,1" Padding="20,15">
             <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
                 <Button Classes="backButton" Click="BackButton_Click">
@@ -121,7 +138,6 @@
             </StackPanel>
         </Border>
         
-        <!-- Content -->
         <ScrollViewer Grid.Row="1">
             <StackPanel Margin="0,40" Spacing="20" Width="700" HorizontalAlignment="Center">
                 <TextBlock Text="Создать ссылку на статью" FontSize="32" FontWeight="Bold" Foreground="#202124" Margin="0,0,0,20" HorizontalAlignment="Center"/>

@@ -32,7 +32,7 @@ public partial class ArticleView : UserControl
     {
         TitleText.Text = article.Title;
         IssnText.Text = $"ISSN: {article.ISSN}";
-        TypeText.Text = GetArticleTypeName(article.Type);
+        TypeText.Text = ArticleSearchService.GetArticleTypeName(article.Type);
         PublishedAtText.Text = $"Опубликовано: {article.PublishedAt.ToString("d MMMM yyyy", CultureInfo.GetCultureInfo("ru-RU"))}";
         AuthorsText.Text = $"Авторы: {article.JoinAuthors()}";
         ArticleText.Text = article.Text;
@@ -63,14 +63,6 @@ public partial class ArticleView : UserControl
         }
     }
 
-    private static string GetArticleTypeName(ArticleType type) =>
-        type switch
-        {
-            ArticleType.Research => "Исследование",
-            ArticleType.Review => "Обзор",
-            ArticleType.CaseStudy => "Кейс-стади",
-            _ => "Статья"
-        };
     private static void SetSection(StackPanel panel, SelectableTextBlock textBlock, string? text)
     {
         var hasText = !string.IsNullOrWhiteSpace(text);

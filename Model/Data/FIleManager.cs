@@ -9,18 +9,18 @@ public abstract class FileManager<T> where T : Article
     public string FullPath =>
         Path.Combine(FolderPath, $"{FileName}.{FileExtension}");
 
-    public FileManager (string file_name,
-                        string file_extension,
-                        string folder_path)
+    public FileManager (string fileName,
+                        string fileExtension,
+                        string folderPath)
     {
-        FileName = file_name;
-        FileExtension = file_extension;
-        FolderPath = folder_path;
+        FileName = fileName;
+        FileExtension = fileExtension;
+        FolderPath = folderPath;
     }
 
-    public void ChangeFileName (string new_name) => FileName = new_name;
-    public void ChangeFolderPath (string new_folder_path) =>
-        FolderPath = new_folder_path;
+    public void ChangeFileName (string newName) => FileName = newName;
+    public void ChangeFolderPath (string newFolderPath) =>
+        FolderPath = newFolderPath;
 
     public abstract void Serialize (T obj);
 }
