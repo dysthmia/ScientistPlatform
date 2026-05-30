@@ -163,7 +163,7 @@
         <Border BorderBrush="#DADCE0"
                 BorderThickness="0,0,0,1">
             <Grid Margin="38,0,110,0"
-                  ColumnDefinitions="Auto,48,*,14,Auto"
+                  ColumnDefinitions="Auto,48,Auto,14,*,14,Auto"
                   VerticalAlignment="Center">
                 <Button Grid.Column="0" 
                         Background="Transparent" 
@@ -188,8 +188,31 @@
                     </Button.Styles>
                 </Button>
 
+                <Button x:Name="FilterButton" Grid.Column="2" Classes="headerAction" Content="Фильтры">
+                    <Button.Flyout>
+                        <Flyout Placement="BottomEdgeAlignedLeft">
+                            <Border Padding="15">
+                                <StackPanel Spacing="10" Width="250">
+                                    <TextBlock Text="Сортировка" FontSize="16" FontWeight="SemiBold" Foreground="#5F6368" Margin="0,0,0,5"/>
+                                    <RadioButton x:Name="SortAZRadio" Content="От А до Я" IsChecked="True" GroupName="SortGroup"/>
+                                    <RadioButton x:Name="SortZARadio" Content="От Я до А" GroupName="SortGroup"/>
+                                    <Separator Height="1" Background="#DADCE0" Margin="0,5"/>
+                                    <RadioButton x:Name="SortNewestRadio" Content="Сначала новые" GroupName="SortGroup"/>
+                                    <RadioButton x:Name="SortOldestRadio" Content="Сначала старые" GroupName="SortGroup"/>
+                                    <Button Content="Применить" 
+                                            Classes="submit" 
+                                            HorizontalAlignment="Stretch" 
+                                            HorizontalContentAlignment="Center"
+                                            Margin="0,10,0,0"
+                                            Click="ApplySort_Click"/>
+                                </StackPanel>
+                            </Border>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+
                 <TextBox x:Name="MainSearchTextBox"
-                         Grid.Column="2"
+                         Grid.Column="4"
                          Classes="searchInput"
                          PlaceholderText="Поиск статей..."
                          TextChanged="MainSearchTextBox_TextChanged"
@@ -208,7 +231,7 @@
                 </TextBox>
 
                 <Button x:Name="SearchButton" 
-                        Grid.Column="4" 
+                        Grid.Column="6" 
                         Classes="headerAction" 
                         Content="Найти статьи"
                         IsEnabled="False"

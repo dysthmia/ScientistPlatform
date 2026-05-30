@@ -27,7 +27,16 @@ public partial class CatalogView : UserControl
         UpdateSubmitButton();
     }
 
+    private enum SortMode
+    {
+        AlphabeticalAsc,
+        AlphabeticalDesc,
+        DateDesc,
+        DateAsc
+    }
+
     private string? _activeSearchText;
+    private SortMode _activeSortMode = SortMode.AlphabeticalAsc;
 
     public void Initialize(Action<Article> openArticle)
     {
@@ -38,6 +47,7 @@ public partial class CatalogView : UserControl
         _articles.AddRange(repository.Articles.Select(article => new ArticleListItem(article)));
 
         _activeSearchText = null;
+        _activeSortMode = SortMode.AlphabeticalAsc;
 
         UpdateArticlesList();
 
@@ -67,12 +77,25 @@ public partial class CatalogView : UserControl
         UpdateArticlesList();
     }
 
+    private void ApplySort_Click(object? sender, RoutedEventArgs e)
+    {
+        if (SortAZRadio.IsChecked == true) _activeSortMode = SortMode.AlphabeticalAsc;
+        else if (SortZARadio.IsChecked == true) _activeSortMode = SortMode.AlphabeticalDesc;
+        else if (SortNewestRadio.IsChecked == true) _activeSortMode = SortMode.DateDesc;
+        else if (SortOldestRadio.IsChecked == true) _activeSortMode = SortMode.DateAsc;
+        
+        FilterButton.Flyout?.Hide();
+        UpdateArticlesList();
+    }
+
     private void Logo_Click(object? sender, RoutedEventArgs e)
     {
         _activeSearchText = null;
+        _activeSortMode = SortMode.AlphabeticalAsc;
 
         // Reset UI
         MainSearchTextBox.Text = string.Empty;
+        SortAZRadio.IsChecked = true;
 
         UpdateArticlesList();
     }
@@ -82,7 +105,6 @@ public partial class CatalogView : UserControl
     {
         IEnumerable<ArticleListItem> filtered = _articles;
 
-        // Apply Main Search (Title and Author.Name)
         if (!string.IsNullOrEmpty(_activeSearchText))
         {
             var searchWords = _activeSearchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -99,9 +121,15 @@ public partial class CatalogView : UserControl
                 return titleMatches || authorMatches;
             });
         }
-
-        // Default Sort
-        filtered = filtered.OrderBy(item => item.Article.Title);
+        
+        filtered = _activeSortMode switch
+        {
+            SortMode.AlphabeticalAsc => filtered.OrderBy(item => item.Article.Title),
+            SortMode.AlphabeticalDesc => filtered.OrderByDescending(item => item.Article.Title),
+            SortMode.DateDesc => filtered.OrderByDescending(item => item.Article.PublishedAt),
+            SortMode.DateAsc => filtered.OrderBy(item => item.Article.PublishedAt),
+            _ => filtered
+        };
 
         ArticlesList.ItemsSource = null;
         ArticlesList.ItemsSource = filtered.ToList();
