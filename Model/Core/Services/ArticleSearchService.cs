@@ -74,7 +74,7 @@ public static class ArticleSearchService
         {
             ArticleType.Research => "Исследование",
             ArticleType.Review => "Обзор",
-            ArticleType.CaseStudy => "Кейс-стади",
+            ArticleType.CaseStudy => "Тематическое исследование",
             _ => "Статья"
         };
 }
