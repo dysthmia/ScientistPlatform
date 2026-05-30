@@ -93,7 +93,6 @@ public partial class CatalogView : UserControl
         _activeSearchText = null;
         _activeSortMode = SortMode.AlphabeticalAsc;
 
-        // Reset UI
         MainSearchTextBox.Text = string.Empty;
         SortAZRadio.IsChecked = true;
 
@@ -121,7 +120,7 @@ public partial class CatalogView : UserControl
                 return titleMatches || authorMatches;
             });
         }
-        
+
         filtered = _activeSortMode switch
         {
             SortMode.AlphabeticalAsc => filtered.OrderBy(item => item.Article.Title),
