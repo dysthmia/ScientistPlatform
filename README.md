@@ -12,14 +12,14 @@
 
 ```bash
 # Перейдите в папку проекта Avalonia
-cd Avalonia
+cd ScientistPlatform
 
 # Запустите проект
 dotnet run
 ```
 *Или запустите напрямую из корня:*
 ```bash
-dotnet run --project Avalonia/ScientistPlatform.csproj
+dotnet run --project ScientistPlatform/ScientistPlatform.csproj
 ```
 
 ---

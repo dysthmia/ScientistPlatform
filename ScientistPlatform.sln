@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 8.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{B7E7C621-6294-4239-81EA-40AF35EF9ECB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScientistPlatform", "Avalonia\ScientistPlatform.csproj", "{ECA82A37-5259-4D3E-8ABF-253AF5E6D2CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScientistPlatform", "ScientistPlatform\ScientistPlatform.csproj", "{ECA82A37-5259-4D3E-8ABF-253AF5E6D2CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
