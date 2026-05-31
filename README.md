@@ -4,22 +4,21 @@
 
 ### Через Visual Studio
 1. Откройте файл решения `ScientistPlatform.sln`.
-2. В обозревателе решений (Solution Explorer) нажмите правой кнопкой мыши на проект **Avalonia (ScientistPlatform)** и выберите "Назначить в качестве запускаемого проекта" (Set as Startup Project).
-3. Нажмите клавишу **F5** или кнопку **Пуск** (Start) на верхней панели.
+2. Нажмите клавишу **F5** или кнопку **Пуск** (Start) на верхней панели.
 
 ### Через командную строку (CLI)
 Для запуска из консоли убедитесь, что у вас установлен .NET SDK, и выполните следующие команды из корневой папки репозитория:
 
 ```bash
-# Перейдите в папку проекта Avalonia
-cd Avalonia
+# Перейдите в папку проекта ScientistPlatform
+cd ScientistPlatform
 
 # Запустите проект
 dotnet run
 ```
 *Или запустите напрямую из корня:*
 ```bash
-dotnet run --project Avalonia/ScientistPlatform.csproj
+dotnet run --project ScientistPlatform/ScientistPlatform.csproj
 ```
 
 ---
