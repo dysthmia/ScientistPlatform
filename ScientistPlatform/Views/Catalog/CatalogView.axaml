@@ -462,7 +462,9 @@
                                 Content="Отправить статью"
                                 Click="SubmitArticleButton_Click"
                                 IsEnabled="False"
-                                Margin="0,5,0,0"/>
+                                Margin="0,5,0,0"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment = "Center"/>
 
                         <TextBlock x:Name="SubmissionMessageText"
                                    Text="Статья будет отправлена на проверку в выбранное издательство."
