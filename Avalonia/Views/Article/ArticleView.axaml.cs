@@ -73,6 +73,10 @@ public partial class ArticleView : UserControl
     {
         _goBack();
     }
+    private void Logo_Click(object? sender, RoutedEventArgs e)
+    {
+        _goBack();
+    }
     private void DownloadJsonButton_Click(object? sender, RoutedEventArgs e)
     {
         SaveArticle((fileName, folderPath) => new JsonFileManager<Article>(fileName, folderPath));

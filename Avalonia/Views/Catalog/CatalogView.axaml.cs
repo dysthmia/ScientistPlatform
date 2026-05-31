@@ -115,22 +115,27 @@ public partial class CatalogView : UserControl
 
     private void UpdateArticlesList()
     {
+        var filteredArticles = GetFilteredArticles();
+
+        ArticlesList.ItemsSource = null;
+        ArticlesList.ItemsSource = filteredArticles
+            .Select(article => new ArticleListItem(article))
+            .ToList();
+    }
+
+    private IEnumerable<Article> GetFilteredArticles()
+    {
         var criteria = new SearchCriteria
         {
             Criterion = _activeCriterion,
             Value = _activeCriteriaValue
         };
 
-        var filteredArticles = ArticleSearchService.FilterAndSort(
+        return ArticleSearchService.FilterAndSort(
             _articles.Select(item => item.Article),
             _activeSearchText,
             _activeSortMode,
             criteria);
-
-        ArticlesList.ItemsSource = null;
-        ArticlesList.ItemsSource = filteredArticles
-            .Select(article => new ArticleListItem(article))
-            .ToList();
     }
 
     private void ArticleButton_Click(object? sender, RoutedEventArgs e)
@@ -218,13 +223,10 @@ public partial class CatalogView : UserControl
     }
     private void SaveAllArticles(string folderName, Func<string, string, FileManager<Article>> createManager)
     {
-        var repository = new ArticleRepository();
         var folderPath = ExportHelper.EnsureExportFolder(folderName);
 
-        foreach (var item in _articles)
+        foreach (var article in GetFilteredArticles())
         {
-            var article = repository.Articles.FirstOrDefault(current => current.ISSN == item.Article.ISSN)
-                          ?? item.Article;
             var fileName = ExportHelper.GetSafeFileName(article.Title);
             var manager = createManager(fileName, folderPath);
 

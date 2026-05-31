@@ -43,15 +43,27 @@
                   ColumnDefinitions="Auto,48,Auto,*,Auto"
                   VerticalAlignment="Center">
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Sci" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
-                    <TextBlock Text="ent" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
-                    <TextBlock Text="ist" FontSize="36" FontWeight="Bold" Foreground="#FBBC05"/>
-                    <TextBlock Text=" " FontSize="36" FontWeight="Bold"/>
-                    <TextBlock Text="Pla" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
-                    <TextBlock Text="tf" FontSize="36" FontWeight="Bold" Foreground="#34A853"/>
-                    <TextBlock Text="orm" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
-                </StackPanel>
+                <Button Grid.Column="0" 
+                        Background="Transparent" 
+                        Padding="0" 
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Click="Logo_Click">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Sci" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
+                        <TextBlock Text="ent" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
+                        <TextBlock Text="ist" FontSize="36" FontWeight="Bold" Foreground="#FBBC05"/>
+                        <TextBlock Text=" " FontSize="36" FontWeight="Bold"/>
+                        <TextBlock Text="Pla" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
+                        <TextBlock Text="tf" FontSize="36" FontWeight="Bold" Foreground="#34A853"/>
+                        <TextBlock Text="orm" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
+                    </StackPanel>
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
 
                 <Button Grid.Column="2"
                         Classes="backButton"
