@@ -4,7 +4,7 @@
 
 ### Через Visual Studio
 1. Откройте файл решения `ScientistPlatform.sln`.
-2. В обозревателе решений (Solution Explorer) нажмите правой кнопкой мыши на проект **Avalonia (ScientistPlatform)** и выберите "Назначить в качестве запускаемого проекта" (Set as Startup Project).
+2. В обозревателе решений (Solution Explorer) нажмите правой кнопкой мыши на проект **ScientistPlatform** и выберите "Назначить в качестве запускаемого проекта" (Set as Startup Project).
 3. Нажмите клавишу **F5** или кнопку **Пуск** (Start) на верхней панели.
 
 ### Через командную строку (CLI)
