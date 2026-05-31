@@ -17,7 +17,7 @@ public partial class MainWindow : Window
         StorageFormatComboBox.SelectedItem = StorageConfig.CurrentFormat;
 
         WelcomePage.Initialize(OpenCatalog);
-        CatalogPage.Initialize(OpenArticle);
+        CatalogPage.Initialize(OpenArticle, OpenCitation);
 
         ShowWelcome();
         _isInitialized = true;
@@ -30,7 +30,7 @@ public partial class MainWindow : Window
 
         var repository = new ArticleRepository();
         repository.MigrateToFormat(newFormat);
-        CatalogPage.Initialize(OpenArticle);
+        CatalogPage.Initialize(OpenArticle, OpenCitation);
     }
 
     private void ShowWelcome()
@@ -39,16 +39,18 @@ public partial class MainWindow : Window
         CatalogPage.IsVisible = false;
         ArticlePanel.IsVisible = false;
         ArticleHost.Content = null;
+        SettingsButton.IsVisible = false;
     }
 
     private void OpenCatalog()
     {
-        CatalogPage.Initialize(OpenArticle);
+        CatalogPage.Initialize(OpenArticle, OpenCitation);
 
         WelcomePage.IsVisible = false;
         CatalogPage.IsVisible = true;
         ArticlePanel.IsVisible = false;
         ArticleHost.Content = null;
+        SettingsButton.IsVisible = true;
     }
 
     private void OpenArticle(Article article)
@@ -58,5 +60,16 @@ public partial class MainWindow : Window
         WelcomePage.IsVisible = false;
         CatalogPage.IsVisible = false;
         ArticlePanel.IsVisible = true;
+        SettingsButton.IsVisible = false;
+    }
+
+    private void OpenCitation()
+    {
+        ArticleHost.Content = new CitationView(OpenCatalog);
+
+        WelcomePage.IsVisible = false;
+        CatalogPage.IsVisible = false;
+        ArticlePanel.IsVisible = true;
+        SettingsButton.IsVisible = false;
     }
 }

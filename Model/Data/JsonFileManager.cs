@@ -14,9 +14,9 @@ public class JsonFileManager<T> : FileManager<T>
         NullValueHandling = NullValueHandling.Ignore
     };
 
-    public JsonFileManager (string file_name, 
-                            string folder_path) 
-                            : base(file_name, "json", folder_path)
+    public JsonFileManager (string fileName, 
+                            string folderPath) 
+                            : base(fileName, "json", folderPath)
     {
     }
 
@@ -25,20 +25,20 @@ public class JsonFileManager<T> : FileManager<T>
         if (obj == null) return;
         Directory.CreateDirectory(FolderPath!);
 
-        JObject json_object = JObject.FromObject(obj, JsonSerializer.Create(JsonSettings));
+        JObject jsonObject = JObject.FromObject(obj, JsonSerializer.Create(JsonSettings));
 
-        File.WriteAllText(FullPath, json_object.ToString());
+        File.WriteAllText(FullPath, jsonObject.ToString());
         
     }
     public T Deserialize()
     {
         if (!File.Exists(FullPath)) return null!;
 
-        string string_json_object = File.ReadAllText(FullPath);
-        if (string.IsNullOrWhiteSpace(string_json_object)) return null!;
+        string stringJsonObject = File.ReadAllText(FullPath);
+        if (string.IsNullOrWhiteSpace(stringJsonObject)) return null!;
 
-        JObject json_object = JObject.Parse(string_json_object);
-        object? obj = json_object.ToObject<T>(JsonSerializer.Create(JsonSettings));
+        JObject jsonObject = JObject.Parse(stringJsonObject);
+        object? obj = jsonObject.ToObject<T>(JsonSerializer.Create(JsonSettings));
         if (obj == null) return null!;
 
         return (T)obj;

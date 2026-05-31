@@ -5,6 +5,41 @@
              x:Class="ScientistPlatform.Views.CatalogView"
              Background="#FFFFFF">
     <UserControl.Styles>
+        <Style Selector="Button.action">
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="28,0"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="CornerRadius" Value="22"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style Selector="Button.headerAction">
+            <Setter Property="Background" Value="#4285F4"/>
+        </Style>
+        <Style Selector="Button.headerAction:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3367D6"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+        </Style>
+        <Style Selector="Button.headerAction:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="Foreground" Value="#9E9E9E"/>
+        </Style>
+
+        <Style Selector="Button.submit">
+            <Setter Property="Background" Value="#34A853"/>
+        </Style>
+        <Style Selector="Button.submit:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2E8B46"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+        </Style>
+        <Style Selector="Button.submit:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="Foreground" Value="#9E9E9E"/>
+        </Style>
+
         <Style Selector="TextBox.searchInput">
             <Setter Property="Height" Value="46"/>
             <Setter Property="Padding" Value="17,8"/>
@@ -14,62 +49,20 @@
             <Setter Property="BorderBrush" Value="#4285F4"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="CornerRadius" Value="23"/>
-        </Style>
-        <Style Selector="TextBox.searchInput:focus">
-            <Setter Property="BorderBrush" Value="#4285F4"/>
-        </Style>
-
-        <Style Selector="Button.headerAction">
-            <Setter Property="Background" Value="#4285F4"/>
-            <Setter Property="Foreground" Value="#FFFFFF"/>
-            <Setter Property="FontSize" Value="22"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Padding" Value="28,0"/>
-            <Setter Property="Height" Value="45"/>
-            <Setter Property="CornerRadius" Value="22"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-        <Style Selector="Button.headerAction:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#3367D6"/>
-            <Setter Property="Foreground" Value="#FFFFFF"/>
-        </Style>
-        
-        <Style Selector="Button.articleItem">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <ControlTemplate>
-                    <ContentPresenter Content="{TemplateBinding Content}"/>
-                </ControlTemplate>
-            </Setter>
-        </Style>
-        <Style Selector="Button.articleItem:pointerover Border">
-            <Setter Property="Background" Value="#F8F9FA"/>
-        </Style>
-
-        <Style Selector="Button.submit">
-            <Setter Property="Background" Value="#34A853"/>
-            <Setter Property="Foreground" Value="#FFFFFF"/>
-            <Setter Property="FontSize" Value="22"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Padding" Value="28,0"/>
-            <Setter Property="Height" Value="45"/>
-            <Setter Property="CornerRadius" Value="22"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-        <Style Selector="Button.submit:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#2E8B46"/>
-            <Setter Property="Foreground" Value="#FFFFFF"/>
-        </Style>
-        <Style Selector="Button.submit:disabled /template/ ContentPresenter">
-            <Setter Property="Background" Value="#E0E0E0"/>
-            <Setter Property="Foreground" Value="#9E9E9E"/>
+            <Style.Resources>
+                <SolidColorBrush x:Key="TextControlBackground">#FFFFFF</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlBackgroundPointerOver">#FFFFFF</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlBackgroundFocused">#FFFFFF</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlForeground">#202124</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlForegroundPointerOver">#202124</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlForegroundFocused">#202124</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlBorderBrush">#4285F4</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlBorderBrushPointerOver">#4285F4</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlBorderBrushFocused">#4285F4</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlPlaceholderForeground">#9AA0A6</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlPlaceholderForegroundPointerOver">#9AA0A6</SolidColorBrush>
+                <SolidColorBrush x:Key="TextControlPlaceholderForegroundFocused">#9AA0A6</SolidColorBrush>
+            </Style.Resources>
         </Style>
 
         <Style Selector="TextBox.formInput">
@@ -123,8 +116,26 @@
                 <SolidColorBrush x:Key="ComboBoxBorderBrushPointerOver">#4285F4</SolidColorBrush>
                 <SolidColorBrush x:Key="ComboBoxBorderBrushPressed">#4285F4</SolidColorBrush>
                 <SolidColorBrush x:Key="ComboBoxBorderBrushFocused">#4285F4</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxDropDownBackground">#FFFFFF</SolidColorBrush>
             </Style.Resources>
         </Style>
+
+        <Style Selector="ComboBox.formInput ComboBoxItem">
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Margin" Value="4,2"/>
+            <Setter Property="Foreground" Value="#202124"/>
+            <Style.Resources>
+                <SolidColorBrush x:Key="ComboBoxItemForeground">#202124</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemForegroundPointerOver">#202124</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemItemsPresenterBackground">#FFFFFF</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemBackgroundPointerOver">#F1F3F4</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemBackgroundSelected">#E8F0FE</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemBackgroundSelectedPointerOver">#D2E3FC</SolidColorBrush>
+                <SolidColorBrush x:Key="ComboBoxItemForegroundSelected">#1A73E8</SolidColorBrush>
+            </Style.Resources>
+        </Style>
+
         <Style Selector="ComboBox.formInput:pointerover">
             <Setter Property="BorderBrush" Value="#4285F4"/>
         </Style>
@@ -144,6 +155,88 @@
             </Style.Resources>
         </Style>
 
+        <Style Selector="FlyoutPresenter">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#DADCE0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="MinWidth" Value="320"/>
+            <Style.Resources>
+                <SolidColorBrush x:Key="FlyoutPresenterBackground">#FFFFFF</SolidColorBrush>
+            </Style.Resources>
+        </Style>
+
+        <Style Selector="FlyoutPresenter RadioButton">
+            <Setter Property="Foreground" Value="#3C4043"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="0,4"/>
+            <Style.Resources>
+                <SolidColorBrush x:Key="RadioButtonBorderBrush">#4285F4</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonBorderBrushPointerOver">#3367D6</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonBorderBrushPressed">#1A73E8</SolidColorBrush>
+                
+                <SolidColorBrush x:Key="RadioButtonOuterEllipseStroke">#4285F4</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokePointerOver">#3367D6</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokePressed">#1A73E8</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokeUnchecked">#4285F4</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokeUncheckedPointerOver">#3367D6</SolidColorBrush>
+                
+                <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokeChecked">#4285F4</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonOuterEllipseStrokeCheckedPointerOver">#3367D6</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonOuterEllipseFillChecked">#4285F4</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonOuterEllipseFillCheckedPointerOver">#3367D6</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonCheckGlyphFill">#FFFFFF</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonCheckGlyphFillPointerOver">#FFFFFF</SolidColorBrush>
+                
+                <SolidColorBrush x:Key="RadioButtonOuterEllipseFillUnchecked">#FFFFFF</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonOuterEllipseFillUncheckedPointerOver">#FFFFFF</SolidColorBrush>
+                
+                <SolidColorBrush x:Key="RadioButtonForegroundPointerOver">#3C4043</SolidColorBrush>
+                <SolidColorBrush x:Key="RadioButtonForegroundPressed">#202124</SolidColorBrush>
+            </Style.Resources>
+        </Style>
+
+        <Style Selector="FlyoutPresenter RadioButton:pointerover /template/ ContentPresenter">
+            <Setter Property="Foreground" Value="#3C4043"/>
+        </Style>
+
+        <Style Selector="FlyoutPresenter TextBlock.flyoutTitle">
+            <Setter Property="Foreground" Value="#202124"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+
+        <Style Selector="FlyoutPresenter TextBlock.flyoutLabel">
+            <Setter Property="Foreground" Value="#5F6368"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+        <Style Selector="FlyoutPresenter Button.apply">
+            <Setter Property="Background" Value="#34A853"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="CornerRadius" Value="23"/>
+            <Setter Property="Margin" Value="0,20,0,0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="FlyoutPresenter Button.apply:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2E8B46"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+        </Style>
+        <Style Selector="FlyoutPresenter Button.apply:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="Foreground" Value="#9E9E9E"/>
+        </Style>
+
         <Style Selector="MenuItem">
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="Foreground" Value="#3C4043"/>
@@ -154,44 +247,121 @@
                 <SolidColorBrush x:Key="MenuFlyoutItemBackgroundPointerOver">#F1F3F4</SolidColorBrush>
             </Style.Resources>
         </Style>
+
+        <Style Selector="MenuItem:pointerover /template/ ContentPresenter#PART_HeaderPresenter">
+            <Setter Property="Foreground" Value="#202124"/>
+        </Style>
+
+        <Style Selector="Button.articleItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector="Button.articleItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
     </UserControl.Styles>
     <Grid RowDefinitions="134,*">
         <Border BorderBrush="#DADCE0"
                 BorderThickness="0,0,0,1">
-            <Grid Margin="38,0,39,0"
-                  ColumnDefinitions="Auto,48,Auto,14,*,14,Auto"
+            <Grid Margin="38,0,110,0"
+                  ColumnDefinitions="Auto,48,Auto,14,Auto,14,*,14,Auto"
                   VerticalAlignment="Center">
-                <StackPanel Grid.Column="0"
-                            Orientation="Horizontal"
-                            VerticalAlignment="Center">
-                    <TextBlock Text="Sci" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
-                    <TextBlock Text="ent" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
-                    <TextBlock Text="ist" FontSize="36" FontWeight="Bold" Foreground="#FBBC05"/>
-                    <TextBlock Text=" " FontSize="36" FontWeight="Bold"/>
-                    <TextBlock Text="Pla" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
-                    <TextBlock Text="tf" FontSize="36" FontWeight="Bold" Foreground="#34A853"/>
-                    <TextBlock Text="orm" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
-                </StackPanel>
+                <Button Grid.Column="0" 
+                        Background="Transparent" 
+                        Padding="0" 
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Click="Logo_Click">
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="Sci" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
+                        <TextBlock Text="ent" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
+                        <TextBlock Text="ist" FontSize="36" FontWeight="Bold" Foreground="#FBBC05"/>
+                        <TextBlock Text=" " FontSize="36" FontWeight="Bold"/>
+                        <TextBlock Text="Pla" FontSize="36" FontWeight="Bold" Foreground="#4285F4"/>
+                        <TextBlock Text="tf" FontSize="36" FontWeight="Bold" Foreground="#34A853"/>
+                        <TextBlock Text="orm" FontSize="36" FontWeight="Bold" Foreground="#EA4335"/>
+                    </StackPanel>
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
 
-                <Button Grid.Column="2" Classes="headerAction" Content="Фильтры"/>
+                <Button x:Name="FilterButton" Grid.Column="2" Classes="action headerAction" Content="Фильтры">
+                    <Button.Flyout>
+                        <Flyout Placement="BottomEdgeAlignedLeft" VerticalOffset="12">
+                            <StackPanel Spacing="0">
+                                <TextBlock Text="Сортировка" Classes="flyoutTitle"/>
+                                
+                                <RadioButton x:Name="SortAZRadio" Content="От А до Я" IsChecked="True" GroupName="SortGroup"/>
+                                <RadioButton x:Name="SortZARadio" Content="От Я до А" GroupName="SortGroup"/>
+                                
+                                <Separator Height="1" Background="#DADCE0" Margin="0,12"/>
+                                
+                                <RadioButton x:Name="SortNewestRadio" Content="Сначала новые" GroupName="SortGroup"/>
+                                <RadioButton x:Name="SortOldestRadio" Content="Сначала старые" GroupName="SortGroup"/>
+                                
+                                <Button Content="Применить" 
+                                        Classes="apply" 
+                                        Click="ApplySort_Click"/>
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
 
-                <TextBox Grid.Column="4"
+                <Button x:Name="CriteriaButton" Grid.Column="4" Classes="action headerAction" Content="Поиск по критериям">
+                    <Button.Flyout>
+                        <Flyout Placement="BottomEdgeAlignedLeft" VerticalOffset="12">
+                            <StackPanel Spacing="0">
+                                <TextBlock Text="Поиск по критериям" Classes="flyoutTitle"/>
+                                
+                                <TextBlock Text="Выберите критерий" Classes="flyoutLabel"/>
+                                <ComboBox x:Name="CriteriaComboBox" 
+                                          Classes="formInput" 
+                                          HorizontalAlignment="Stretch"
+                                          Margin="0,0,0,16"
+                                          SelectionChanged="CriteriaInputs_Changed">
+                                    <ComboBoxItem Content="Название" Tag="Title"/>
+                                    <ComboBoxItem Content="ISSN" Tag="ISSN"/>
+                                    <ComboBoxItem Content="Ключевые слова" Tag="KeyWords"/>
+                                    <ComboBoxItem Content="Тип" Tag="Type"/>
+                                    <ComboBoxItem Content="Дата публикации" Tag="PublishedAt"/>
+                                </ComboBox>
+
+                                <TextBlock Text="Введите значение" Classes="flyoutLabel"/>
+                                <TextBox x:Name="CriteriaValueTextBox" 
+                                         Classes="formInput" 
+                                         PlaceholderText="Поиск..."
+                                         TextChanged="CriteriaInputs_Changed"/>
+
+                                <Button x:Name="ApplyCriteriaButton"
+                                        Content="Применить" 
+                                        Classes="apply" 
+                                        IsEnabled="False"
+                                        Click="ApplyCriteria_Click"/>
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+
+                <TextBox x:Name="MainSearchTextBox"
+                         Grid.Column="6"
                          Classes="searchInput"
-                         PlaceholderText="Поиск статей...">
-                    <TextBox.Resources>
-                        <SolidColorBrush x:Key="TextControlBackground">#FFFFFF</SolidColorBrush>
-                        <SolidColorBrush x:Key="TextControlBackgroundPointerOver">#FFFFFF</SolidColorBrush>
-                        <SolidColorBrush x:Key="TextControlBackgroundFocused">#FFFFFF</SolidColorBrush>
-                        <SolidColorBrush x:Key="TextControlForeground">#202124</SolidColorBrush>
-                        <SolidColorBrush x:Key="TextControlForegroundPointerOver">#202124</SolidColorBrush>
-                        <SolidColorBrush x:Key="TextControlForegroundFocused">#202124</SolidColorBrush>
-                        <SolidColorBrush x:Key="TextControlBorderBrush">#4285F4</SolidColorBrush>
-                        <SolidColorBrush x:Key="TextControlBorderBrushPointerOver">#4285F4</SolidColorBrush>
-                        <SolidColorBrush x:Key="TextControlBorderBrushFocused">#4285F4</SolidColorBrush>
-                    </TextBox.Resources>
-                </TextBox>
+                         PlaceholderText="Поиск статей..."
+                         TextChanged="MainSearchTextBox_TextChanged"
+                         KeyDown="MainSearchTextBox_KeyDown"/>
 
-                <Button Grid.Column="6" Classes="headerAction" Content="Поиск"/>
+                <Button x:Name="SearchButton" 
+                        Grid.Column="8" 
+                        Classes="action headerAction" 
+                        Content="Найти статьи"
+                        IsEnabled="False"
+                        Click="SearchButton_Click"/>
             </Grid>
         </Border>
 
@@ -206,13 +376,20 @@
                         <DataTemplate x:DataType="views:ArticleListItem">
                             <Button Classes="articleItem"
                                     Margin="0,0,0,21"
-                                    Click="ArticleButton_Click">
+                                    Click="ArticleButton_Click"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    Background="Transparent"
+                                    Padding="0"
+                                    BorderThickness="0"
+                                    Cursor="Hand">
                                 <Border Padding="19,17,19,17"
                                         MinHeight="128"
                                         BorderBrush="#4285F4"
                                         BorderThickness="3"
                                         CornerRadius="20"
-                                        Background="#FFFFFF">
+                                        Background="#FFFFFF"
+                                        HorizontalAlignment="Stretch">
                                     <StackPanel Spacing="8">
                                         <TextBlock Text="{Binding Title}"
                                                    FontSize="20"
@@ -281,16 +458,14 @@
                         </StackPanel>
 
                         <Button x:Name="SubmitArticleButton"
-                                Classes="submit"
+                                Classes="action submit"
                                 Content="Отправить статью"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Center"
                                 Click="SubmitArticleButton_Click"
                                 IsEnabled="False"
                                 Margin="0,5,0,0"/>
 
                         <TextBlock x:Name="SubmissionMessageText"
-                                   Text="Ваша статья будет отправлена на проверку в выбранное издательство."
+                                   Text="Статья будет отправлена на проверку в выбранное издательство."
                                    FontSize="12"
                                    Foreground="#70757A"
                                    TextWrapping="Wrap"
@@ -298,7 +473,7 @@
                     </StackPanel>
                 </Border>
 
-                <Button Classes="headerAction"
+                <Button Classes="action headerAction"
                         Content="Скачать статьи"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Center">
@@ -311,10 +486,11 @@
                     </Button.Flyout>
                 </Button>
 
-                <Button Classes="headerAction"
+                <Button Classes="action headerAction"
                         Content="Создать ссылку на статью"
                         HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Center"/>
+                        HorizontalContentAlignment="Center"
+                        Click="OpenCitationView_Click"/>
             </StackPanel>
         </Grid>
     </Grid>

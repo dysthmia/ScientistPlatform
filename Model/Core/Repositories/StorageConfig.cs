@@ -2,11 +2,11 @@ namespace Model.Core;
 
 public enum StorageFormat
 {
-    Json,
-    Xml
+    JSON,
+    XML
 }
 
 public static class StorageConfig
 {
-    public static StorageFormat CurrentFormat { get; set; } = StorageFormat.Json;
+    public static StorageFormat CurrentFormat { get; set; } = StorageFormat.JSON;
 }

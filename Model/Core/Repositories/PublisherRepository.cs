@@ -11,11 +11,11 @@ public static class PublisherRepository
             4.8,
             new List<string> 
             { 
-                "study", "urban ecology", "microclimate", "green infrastructure", 
-                "climate adaptation", "remote sensing", "drought", "soil moisture", 
-                "precision agriculture", "open science", "reproducibility", 
-                "materials science", "laboratory notebook", "biodiversity", 
-                "acoustics", "forest restoration", "machine learning" 
+                "исследование", "городская экология", "микроклимат", "зеленая инфраструктура", 
+                "адаптация к климату", "дистанционное зондирование", "засуха", "влажность почвы", 
+                "точное земледелие", "открытая наука", "воспроизводимость", 
+                "материаловедение", "лабораторный журнал", "биоразнообразие", 
+                "акустика", "восстановление лесов", "машинное обучение" 
             },
             PublisherCitationStyle.Apa),
 
@@ -24,10 +24,10 @@ public static class PublisherRepository
             4.5,
             new List<string> 
             { 
-                "review", "digital twin", "smart city", "urban planning", 
-                "sustainability", "microplastics", "freshwater", "ecotoxicology", 
-                "water quality", "medical imaging", "artificial intelligence", 
-                "diagnostics", "clinical safety" 
+                "обзор", "цифровой двойник", "умный город", "городское планирование", 
+                "устойчивое развитие", "микропластик", "пресная вода", "экотоксикология", 
+                "качество воды", "медицинская визуализация", "искусственный интеллект", 
+                "диагностика", "клиническая безопасность" 
             },
             PublisherCitationStyle.Gost),
 
@@ -36,9 +36,9 @@ public static class PublisherRepository
             4.2,
             new List<string> 
             { 
-                "case", "water management", "cyanobacteria", "public health", 
-                "restoration", "energy efficiency", "campus", "building retrofit", 
-                "air quality", "citizen science", "sensors", "urban health" 
+                "тематическое исследование", "управление водными ресурсами", "цианобактерии", "общественное здравоохранение", 
+                "восстановление", "энергоэффективность", "кампус", "реконструкция зданий", 
+                "качество воздуха", "гражданская наука", "датчики", "городское здоровье" 
             },
             PublisherCitationStyle.Ieee)
     ];
